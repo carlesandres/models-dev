@@ -17,6 +17,7 @@
   "keywords": [
     "ai",
     "models",
+    "models.dev",
     "llm",
     "gpt",
     "claude",
@@ -25,7 +26,6 @@
     "anthropic",
     "pricing",
     "comparison",
-    "machine learning",
     "artificial intelligence"
   ],
   "commands": [
@@ -86,3 +86,4 @@
     "publish": "npx @raycast/api@latest publish"
   }
 }
+
