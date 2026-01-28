@@ -29,9 +29,8 @@ ${capabilities.length > 0 ? capabilities.map((c) => `- ${c}`).join("\n") : "- Te
 
 ## Modalities
 
-**Input**: ${formatModalities(model.modalities.input)}
-
-**Output**: ${formatModalities(model.modalities.output)}
+- **Input**: ${formatModalities(model.modalities.input)}
+- **Output**: ${formatModalities(model.modalities.output)}
 
 ${
   model.cost
