@@ -1,8 +1,8 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "models-dev",
-  "title": "models.dev",
-  "description": "Interrogate models.dev",
+  "title": "Models.dev",
+  "description": "Explore AI model specifications, pricing, and capabilities from models.dev",
   "icon": "extension-icon.png",
   "author": "carlesandres",
   "platforms": [
@@ -10,16 +10,45 @@
     "Windows"
   ],
   "categories": [
-    "Productivity"
+    "Developer Tools",
+    "Data"
   ],
   "license": "MIT",
   "commands": [
     {
-      "name": "search-model",
-      "title": "Search model",
+      "name": "search-models",
+      "title": "Search Models",
       "subtitle": "models.dev",
-      "description": "Filters by model name or provider",
-      "mode": "no-view"
+      "description": "Search across all AI models by name, provider, or capability",
+      "mode": "view"
+    },
+    {
+      "name": "browse-providers",
+      "title": "Browse Providers",
+      "subtitle": "models.dev",
+      "description": "Explore AI providers and their model offerings",
+      "mode": "view"
+    },
+    {
+      "name": "find-by-capability",
+      "title": "Find by Capability",
+      "subtitle": "models.dev",
+      "description": "Find models that support specific capabilities",
+      "mode": "view"
+    },
+    {
+      "name": "compare-models",
+      "title": "Compare Models",
+      "subtitle": "models.dev",
+      "description": "Select models to compare side-by-side",
+      "mode": "view"
+    },
+    {
+      "name": "pricing-explorer",
+      "title": "Pricing Explorer",
+      "subtitle": "models.dev",
+      "description": "Compare model pricing across providers",
+      "mode": "view"
     }
   ],
   "dependencies": {
