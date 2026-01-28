@@ -41,10 +41,7 @@ ${
 | Type | Price (per 1M tokens) |
 |------|----------------------|
 | Input | ${formatPrice(model.cost.input)} |
-| Output | ${formatPrice(model.cost.output)} |
-${model.cost.cache_read !== undefined ? `| Cache Read | ${formatPrice(model.cost.cache_read)} |` : ""}
-${model.cost.cache_write !== undefined ? `| Cache Write | ${formatPrice(model.cost.cache_write)} |` : ""}
-${model.cost.reasoning !== undefined ? `| Reasoning | ${formatPrice(model.cost.reasoning)} |` : ""}
+| Output | ${formatPrice(model.cost.output)} |${model.cost.cache_read !== undefined ? `\n| Cache Read | ${formatPrice(model.cost.cache_read)} |` : ""}${model.cost.cache_write !== undefined ? `\n| Cache Write | ${formatPrice(model.cost.cache_write)} |` : ""}${model.cost.reasoning !== undefined ? `\n| Reasoning | ${formatPrice(model.cost.reasoning)} |` : ""}
 `
     : ""
 }
@@ -56,9 +53,7 @@ ${
 
 | Type | Limit |
 |------|-------|
-| Context Window | ${formatContextWindow(model.limit.context)} |
-${model.limit.input !== undefined ? `| Max Input | ${formatContextWindow(model.limit.input)} |` : ""}
-${model.limit.output !== undefined ? `| Max Output | ${formatContextWindow(model.limit.output)} |` : ""}
+| Context Window | ${formatContextWindow(model.limit.context)} |${model.limit.input !== undefined ? `\n| Max Input | ${formatContextWindow(model.limit.input)} |` : ""}${model.limit.output !== undefined ? `\n| Max Output | ${formatContextWindow(model.limit.output)} |` : ""}
 `
     : ""
 }
