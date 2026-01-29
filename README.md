@@ -1,37 +1,35 @@
 # Models.dev
 
-Explore AI model specifications, pricing, and capabilities from [models.dev](https://models.dev) - a comprehensive open-source database of AI models.
+Browse AI model specifications, pricing, and capabilities from [models.dev](https://models.dev)—a community-maintained database of AI models across providers.
 
 ## Commands
 
 ### Search Models
-Search across all AI models by name, provider, or capability. Filter by capabilities like reasoning, vision, audio, tool calling, and more.
+Search all models by name, provider, or family. Filter by capability: reasoning, vision, audio, video, PDF, tool calling, structured output, or open weights.
 
 ### Browse Providers
-Explore AI providers (OpenAI, Anthropic, Google, etc.) and drill down into their model offerings.
+List all providers and drill into their model offerings. View model counts and access provider documentation.
 
 ### Find by Capability
-Start from a capability (reasoning, vision, audio, etc.) and find all models that support it.
+Select a capability category to see all models that support it. Categories include reasoning, tool calling, vision, audio, video, PDF, structured output, and open weights.
 
 ### Compare Models
-Select 2-4 models to compare side-by-side. See pricing, context windows, capabilities, and more in a comparison table.
+Select up to three models for side-by-side comparison. View pricing, context windows, and capabilities in a table. Export comparisons as markdown.
 
 ### Pricing Explorer
-Compare model pricing across providers. Filter by price range and explore models organized by pricing tier (Free, Budget, Standard, Premium).
+Filter models by price tier (free, under $1/M, under $5/M, etc.) and sort by cost. Estimate costs for different token counts.
 
-## Features
+## Model Information
 
-- Fast, cached access to model data using stale-while-revalidate strategy
-- Provider logos for visual identification
-- Detailed model information including:
-  - Pricing (input/output/cache pricing)
-  - Context window and token limits
-  - Capabilities (reasoning, tool calling, vision, audio, etc.)
-  - Knowledge cutoff dates
-  - Open weights status
-- Copy model IDs and full model info as JSON
-- Quick access to provider documentation
+Each model includes:
+
+- **Pricing** — Input, output, cache read/write, and reasoning costs (per million tokens)
+- **Limits** — Context window, max input tokens, max output tokens
+- **Capabilities** — Reasoning, tool calling, vision, audio, video, PDF, structured output
+- **Metadata** — Knowledge cutoff, release date, open weights, status (alpha/beta/deprecated)
+
+Actions available: copy model ID, copy provider/model ID, export as JSON, open on models.dev.
 
 ## Data Source
 
-This extension fetches data from the [models.dev API](https://models.dev/api.json), a community-maintained database of AI model specifications.
+Data is fetched from the [models.dev API](https://models.dev/api.json) with stale-while-revalidate caching.
