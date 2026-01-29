@@ -5,9 +5,10 @@ import { ModelDetail } from "./ModelDetail";
 interface ModelActionsProps {
   model: Model;
   onAddToComparison?: (model: Model) => void;
+  showViewDetails?: boolean;
 }
 
-export function ModelActions({ model, onAddToComparison }: ModelActionsProps) {
+export function ModelActions({ model, onAddToComparison, showViewDetails = true }: ModelActionsProps) {
   const modelJson = JSON.stringify(
     {
       id: model.id,
@@ -34,18 +35,19 @@ export function ModelActions({ model, onAddToComparison }: ModelActionsProps) {
   return (
     <ActionPanel>
       <ActionPanel.Section>
-        <Action.Push title="View Details" icon={Icon.Eye} target={<ModelDetail model={model} />} />
-        <Action.CopyToClipboard title="Copy Model ID" content={model.id} shortcut={{ modifiers: ["cmd"], key: "c" }} />
+        {showViewDetails && <Action.Push title="View Details" icon={Icon.Eye} target={<ModelDetail model={model} />} />}
+        <Action.CopyToClipboard title="Copy Model ID" content={model.id} shortcut={{ modifiers: ["cmd"], key: "." }} />
+        <Action.CopyToClipboard
+          title="Copy Provider/Model"
+          content={`${model.providerId}/${model.id}`}
+          shortcut={{ modifiers: ["cmd", "shift"], key: "." }}
+        />
       </ActionPanel.Section>
 
       <ActionPanel.Section>
-        <Action.CopyToClipboard
-          title="Copy as JSON"
-          content={modelJson}
-          shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
-        />
+        <Action.CopyToClipboard title="Copy as JSON" content={modelJson} />
         <Action.OpenInBrowser
-          title="Open Provider Docs"
+          title="Open models.dev in Browser"
           url={`https://models.dev`}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
         />

@@ -1,6 +1,7 @@
-import { Detail, ActionPanel, Action, Icon, Color } from "@raycast/api";
+import { Detail, Icon, Color } from "@raycast/api";
 import { Model } from "../lib/types";
 import { formatPrice, formatContextWindow, formatModalities, formatKnowledgeCutoff } from "../lib/formatters";
+import { ModelActions } from "./ModelActions";
 
 interface ModelDetailProps {
   model: Model;
@@ -63,26 +64,6 @@ ${rows.join("\n")}
 })()}
 `;
 
-  const modelJson = JSON.stringify(
-    {
-      id: model.id,
-      name: model.name,
-      provider: model.providerName,
-      capabilities: {
-        reasoning: model.reasoning,
-        tool_call: model.tool_call,
-        structured_output: model.structured_output,
-      },
-      modalities: model.modalities,
-      cost: model.cost,
-      limit: model.limit,
-      knowledge: model.knowledge,
-      open_weights: model.open_weights,
-    },
-    null,
-    2,
-  );
-
   return (
     <Detail
       markdown={markdown}
@@ -134,25 +115,7 @@ ${rows.join("\n")}
           </Detail.Metadata.TagList>
         </Detail.Metadata>
       }
-      actions={
-        <ActionPanel>
-          <Action.CopyToClipboard
-            title="Copy Model ID"
-            content={model.id}
-            shortcut={{ modifiers: ["cmd"], key: "c" }}
-          />
-          <Action.CopyToClipboard
-            title="Copy as JSON"
-            content={modelJson}
-            shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
-          />
-          <Action.OpenInBrowser
-            title="Open Models.dev"
-            url="https://models.dev"
-            shortcut={{ modifiers: ["cmd"], key: "o" }}
-          />
-        </ActionPanel>
-      }
+      actions={<ModelActions model={model} showViewDetails={false} />}
     />
   );
 }
