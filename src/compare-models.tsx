@@ -153,7 +153,7 @@ export default function CompareModels() {
                   {selectedModels.length >= 2 && (
                     <Action
                       title="Compare Selected Models"
-                      icon={Icon.SideBySide}
+                      icon={Icon.Switch}
                       onAction={handleCompare}
                       shortcut={{ modifiers: ["cmd"], key: "return" }}
                     />
@@ -189,7 +189,7 @@ export default function CompareModels() {
                 {selectedModels.length >= 2 && (
                   <Action
                     title="Compare Selected Models"
-                    icon={Icon.SideBySide}
+                    icon={Icon.Switch}
                     onAction={handleCompare}
                     shortcut={{ modifiers: ["cmd"], key: "return" }}
                   />
