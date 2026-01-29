@@ -16,7 +16,8 @@ type PriceFilter =
   | "under-15"
   | "over-1"
   | "over-2"
-  | "over-5";
+  | "over-5"
+  | "over-15";
 
 const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
   { id: "all", label: "All Prices" },
@@ -29,6 +30,7 @@ const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
   { id: "over-1", label: "Over $1/M output" },
   { id: "over-2", label: "Over $2/M output" },
   { id: "over-5", label: "Over $5/M output" },
+  { id: "over-15", label: "Over $15/M output" },
 ];
 
 export default function PricingExplorer() {
@@ -70,6 +72,9 @@ export default function PricingExplorer() {
       case "over-5":
         models = models.filter((m) => m.cost && m.cost.output > 5);
         break;
+      case "over-15":
+        models = models.filter((m) => m.cost && m.cost.output > 15);
+        break;
     }
 
     // Sort by output price (ascending - cheapest first)
@@ -104,9 +109,11 @@ export default function PricingExplorer() {
         icon={Icon.MagnifyingGlass}
       />
 
-      {filteredModels.map((model) => (
-        <PricingListItem key={`${model.providerId}-${model.id}`} model={model} />
-      ))}
+      <List.Section title={`${filteredModels.length} models`}>
+        {filteredModels.map((model) => (
+          <PricingListItem key={`${model.providerId}-${model.id}`} model={model} />
+        ))}
+      </List.Section>
     </List>
   );
 }
