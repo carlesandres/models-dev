@@ -60,6 +60,22 @@ export default function CompareModels() {
 
   const selectedIds = useMemo(() => new Set(selectedModels.map((m) => `${m.providerId}-${m.id}`)), [selectedModels]);
 
+  const filteredModels = useMemo(() => {
+    if (!data?.models) return [];
+    let models = data.models.filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`));
+    if (searchText) {
+      const search = searchText.toLowerCase();
+      models = models.filter(
+        (m) =>
+          m.name.toLowerCase().includes(search) ||
+          m.id.toLowerCase().includes(search) ||
+          m.providerName.toLowerCase().includes(search) ||
+          (m.family && m.family.toLowerCase().includes(search))
+      );
+    }
+    return models;
+  }, [data?.models, selectedIds, searchText]);
+
   const handleToggleModel = (model: Model) => {
     const modelKey = `${model.providerId}-${model.id}`;
     if (selectedIds.has(modelKey)) {
@@ -92,6 +108,7 @@ export default function CompareModels() {
   return (
     <List
       isLoading={isLoading}
+      filtering={false}
       searchText={searchText}
       onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search models to compare..."
@@ -148,10 +165,8 @@ export default function CompareModels() {
         </List.Section>
       )}
 
-      <List.Section title="All Models">
-        {data?.models
-          .filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`))
-          .map((model) => (
+      <List.Section title={`${filteredModels.length} models`}>
+        {filteredModels.map((model) => (
             <List.Item
               key={`${model.providerId}-${model.id}`}
               title={model.name}
