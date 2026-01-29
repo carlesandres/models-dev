@@ -10,6 +10,16 @@ export function formatPrice(pricePerMillion: number | undefined): string {
 }
 
 /**
+ * Format price with fixed width for aligned display in lists
+ * Pads to accommodate up to 3-digit integer part (e.g., "$999.00/M")
+ */
+export function formatPriceFixed(pricePerMillion: number | undefined): string {
+  const price = formatPrice(pricePerMillion);
+  // Target width: "$999.00/M" = 9 chars
+  return price.padStart(9);
+}
+
+/**
  * Format context window size for display
  */
 export function formatContextWindow(tokens: number | undefined): string {
