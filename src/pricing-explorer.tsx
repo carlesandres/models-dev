@@ -6,15 +6,29 @@ import { Model } from "./lib/types";
 import { formatPrice, estimateCost } from "./lib/formatters";
 import { getCapabilityAccessories } from "./lib/accessories";
 
-type PriceFilter = "all" | "free" | "non-free" | "under-1" | "under-5" | "under-15";
+type PriceFilter =
+  | "all"
+  | "free"
+  | "non-free"
+  | "under-1"
+  | "under-2"
+  | "under-5"
+  | "under-15"
+  | "over-1"
+  | "over-2"
+  | "over-5";
 
 const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
   { id: "all", label: "All Prices" },
-  { id: "free", label: "Free" },
-  { id: "non-free", label: "Non-Free" },
+  { id: "free", label: "Free output" },
+  { id: "non-free", label: "Non-free output" },
   { id: "under-1", label: "Under $1/M output" },
+  { id: "under-2", label: "Under $2/M output" },
   { id: "under-5", label: "Under $5/M output" },
   { id: "under-15", label: "Under $15/M output" },
+  { id: "over-1", label: "Over $1/M output" },
+  { id: "over-2", label: "Over $2/M output" },
+  { id: "over-5", label: "Over $5/M output" },
 ];
 
 export default function PricingExplorer() {
@@ -38,11 +52,23 @@ export default function PricingExplorer() {
       case "under-1":
         models = models.filter((m) => m.cost && m.cost.output <= 1);
         break;
+      case "under-2":
+        models = models.filter((m) => m.cost && m.cost.output <= 2);
+        break;
       case "under-5":
         models = models.filter((m) => m.cost && m.cost.output <= 5);
         break;
       case "under-15":
         models = models.filter((m) => m.cost && m.cost.output <= 15);
+        break;
+      case "over-1":
+        models = models.filter((m) => m.cost && m.cost.output > 1);
+        break;
+      case "over-2":
+        models = models.filter((m) => m.cost && m.cost.output > 2);
+        break;
+      case "over-5":
+        models = models.filter((m) => m.cost && m.cost.output > 5);
         break;
     }
 
