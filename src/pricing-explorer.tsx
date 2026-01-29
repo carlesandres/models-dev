@@ -22,7 +22,7 @@ type PriceFilter =
 const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
   { id: "all", label: "All Prices" },
   { id: "free", label: "Free output" },
-  { id: "non-free", label: "Non-free output" },
+  { id: "non-free", label: "Paid output" },
   { id: "under-1", label: "Under $1/M output" },
   { id: "under-2", label: "Under $2/M output" },
   { id: "under-5", label: "Under $5/M output" },
@@ -36,12 +36,24 @@ const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
 export default function PricingExplorer() {
   const { data, isLoading } = useModelsData();
   const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
+  const [searchText, setSearchText] = useState("");
 
   const filteredModels = useMemo(() => {
     if (!data?.models) return [];
 
     // Only include models with output pricing
     let models = data.models.filter((m) => m.cost?.output !== undefined);
+
+    // Filter by search text
+    if (searchText) {
+      const search = searchText.toLowerCase();
+      models = models.filter(
+        (m) =>
+          m.name.toLowerCase().includes(search) ||
+          m.id.toLowerCase().includes(search) ||
+          m.providerName.toLowerCase().includes(search),
+      );
+    }
 
     // Apply price filter based on output price
     switch (priceFilter) {
@@ -85,11 +97,13 @@ export default function PricingExplorer() {
     });
 
     return models;
-  }, [data?.models, priceFilter]);
+  }, [data?.models, priceFilter, searchText]);
 
   return (
     <List
       isLoading={isLoading}
+      filtering={false}
+      onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search models by price..."
       searchBarAccessory={
         <List.Dropdown

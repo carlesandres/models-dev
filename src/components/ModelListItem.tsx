@@ -7,11 +7,10 @@ import { getCapabilityAccessories } from "../lib/accessories";
 
 interface ModelListItemProps {
   model: Model;
-  showProvider?: boolean;
   onAddToComparison?: (model: Model) => void;
 }
 
-export function ModelListItem({ model, showProvider = true, onAddToComparison }: ModelListItemProps) {
+export function ModelListItem({ model, onAddToComparison }: ModelListItemProps) {
   const accessories: List.Item.Accessory[] = [];
 
   // Status indicator (alpha, beta, deprecated)
@@ -56,7 +55,7 @@ export function ModelListItem({ model, showProvider = true, onAddToComparison }:
   return (
     <List.Item
       title={model.name}
-      subtitle={showProvider ? model.providerName : model.family}
+      subtitle={model.providerName}
       icon={{ source: model.providerLogo, fallback: Icon.Globe }}
       accessories={accessories}
       keywords={keywords}
