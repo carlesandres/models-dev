@@ -1,7 +1,37 @@
+import { Cache } from "@raycast/api";
 import { RawApiResponse, RawModel, Model, Provider, ModelsData, InputModality, OutputModality } from "./types";
 
 export const API_URL = "https://models.dev/api.json";
 export const LOGO_BASE_URL = "https://models.dev/logos";
+
+// Cache for transformed data (skips both network AND parsing/transform)
+const cache = new Cache();
+const CACHE_KEY = "models-data";
+
+interface CachedData {
+  data: ModelsData;
+  timestamp: number;
+}
+
+export function getCachedData(): ModelsData | null {
+  const cached = cache.get(CACHE_KEY);
+  if (!cached) return null;
+
+  try {
+    const parsed = JSON.parse(cached) as CachedData;
+    return parsed.data;
+  } catch {
+    return null;
+  }
+}
+
+export function setCachedData(data: ModelsData): void {
+  const cacheEntry: CachedData = {
+    data,
+    timestamp: Date.now(),
+  };
+  cache.set(CACHE_KEY, JSON.stringify(cacheEntry));
+}
 
 export function getProviderLogoUrl(providerId: string): string {
   return `${LOGO_BASE_URL}/${providerId}.svg`;

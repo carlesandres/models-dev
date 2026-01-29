@@ -1,24 +1,35 @@
-import { useFetch } from "@raycast/utils";
-import { API_URL, transformApiResponse } from "../lib/api";
+import { useState, useEffect } from "react";
+import { API_URL, transformApiResponse, getCachedData, setCachedData } from "../lib/api";
 import { ModelsData, RawApiResponse } from "../lib/types";
 
 /**
- * Hook to fetch and cache models data from models.dev
- *
- * Uses stale-while-revalidate strategy:
- * - Returns cached data immediately if available
- * - Revalidates in the background
- * - Updates UI when fresh data arrives
+ * Hook to fetch models data from models.dev
+ * Caches transformed data to disk for instant subsequent loads.
  */
 export function useModelsData() {
-  return useFetch<ModelsData>(API_URL, {
-    // Keep showing previous data while loading new data
-    keepPreviousData: true,
-
-    // Transform the raw API response into our normalized structure
-    parseResponse: async (response) => {
-      const data: RawApiResponse = await response.json();
-      return transformApiResponse(data);
-    },
+  const [data, setData] = useState<ModelsData | undefined>(() => {
+    // Synchronously check cache on initial render
+    return getCachedData() ?? undefined;
   });
+  const [isLoading, setIsLoading] = useState(!data);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(API_URL);
+        const raw: RawApiResponse = await response.json();
+        const transformed = transformApiResponse(raw);
+        setCachedData(transformed);
+        setData(transformed);
+      } catch (error) {
+        console.error("Failed to fetch models:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  return { data, isLoading };
 }
