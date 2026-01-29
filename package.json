@@ -44,6 +44,13 @@
       "mode": "view"
     },
     {
+      "name": "pricing-explorer",
+      "title": "Pricing Explorer",
+      "subtitle": "models.dev",
+      "description": "Compare model pricing across providers",
+      "mode": "view"
+    },
+    {
       "name": "find-by-capability",
       "title": "Find by Capability",
       "subtitle": "models.dev",
@@ -55,13 +62,6 @@
       "title": "Compare Models",
       "subtitle": "models.dev",
       "description": "Select models to compare side-by-side",
-      "mode": "view"
-    },
-    {
-      "name": "pricing-explorer",
-      "title": "Pricing Explorer",
-      "subtitle": "models.dev",
-      "description": "Compare model pricing across providers",
       "mode": "view"
     }
   ],
