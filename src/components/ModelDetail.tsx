@@ -32,30 +32,38 @@ ${capabilities.length > 0 ? capabilities.map((c) => `- ${c}`).join("\n") : "- Te
 - **Input**: ${formatModalities(model.modalities.input)}
 - **Output**: ${formatModalities(model.modalities.output)}
 
-${
-  model.cost
-    ? `
+${(() => {
+  if (!model.cost) return "";
+  const rows = [
+    `| Input | ${formatPrice(model.cost.input)} |`,
+    `| Output | ${formatPrice(model.cost.output)} |`,
+  ];
+  if (model.cost.cache_read !== undefined) rows.push(`| Cache Read | ${formatPrice(model.cost.cache_read)} |`);
+  if (model.cost.cache_write !== undefined) rows.push(`| Cache Write | ${formatPrice(model.cost.cache_write)} |`);
+  if (model.cost.reasoning !== undefined) rows.push(`| Reasoning | ${formatPrice(model.cost.reasoning)} |`);
+  return `
 ## Pricing
 
 | Type | Price (per 1M tokens) |
 |------|----------------------|
-| Input | ${formatPrice(model.cost.input)} |
-| Output | ${formatPrice(model.cost.output)} |${model.cost.cache_read !== undefined ? `\n| Cache Read | ${formatPrice(model.cost.cache_read)} |` : ""}${model.cost.cache_write !== undefined ? `\n| Cache Write | ${formatPrice(model.cost.cache_write)} |` : ""}${model.cost.reasoning !== undefined ? `\n| Reasoning | ${formatPrice(model.cost.reasoning)} |` : ""}
-`
-    : ""
-}
+${rows.join("\n")}
 
-${
-  model.limit
-    ? `
+`;
+})()}
+${(() => {
+  if (!model.limit) return "";
+  const rows = [`| Context Window | ${formatContextWindow(model.limit.context)} |`];
+  if (model.limit.input !== undefined) rows.push(`| Max Input | ${formatContextWindow(model.limit.input)} |`);
+  if (model.limit.output !== undefined) rows.push(`| Max Output | ${formatContextWindow(model.limit.output)} |`);
+  return `
 ## Token Limits
 
 | Type | Limit |
 |------|-------|
-| Context Window | ${formatContextWindow(model.limit.context)} |${model.limit.input !== undefined ? `\n| Max Input | ${formatContextWindow(model.limit.input)} |` : ""}${model.limit.output !== undefined ? `\n| Max Output | ${formatContextWindow(model.limit.output)} |` : ""}
-`
-    : ""
-}
+${rows.join("\n")}
+
+`;
+})()}
 `;
 
   const modelJson = JSON.stringify(
