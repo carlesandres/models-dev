@@ -17,7 +17,7 @@ export function useModelsData() {
     async function fetchData() {
       try {
         const response = await fetch(API_URL);
-        const raw: RawApiResponse = await response.json();
+        const raw = (await response.json()) as RawApiResponse;
         const transformed = transformApiResponse(raw);
         setCachedData(transformed);
         setData(transformed);
