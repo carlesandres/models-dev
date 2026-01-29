@@ -119,14 +119,11 @@ export default function PricingExplorer() {
 }
 
 function PricingListItem({ model }: { model: Model }) {
-  const tier = getPricingTier(model.cost?.input);
-  const tierColor = PRICING_TIER_COLORS[tier];
-
   const accessories: List.Item.Accessory[] = [
     // Capability icons first
     ...getCapabilityAccessories(model),
     {
-      tag: { value: formatPrice(model.cost?.input), color: tierColor },
+      text: formatPrice(model.cost?.input),
       tooltip: "Input price",
     },
     {
@@ -134,20 +131,6 @@ function PricingListItem({ model }: { model: Model }) {
       tooltip: "Output price",
     },
   ];
-
-  if (model.cost?.cache_read !== undefined) {
-    accessories.push({
-      text: `Cache: ${formatPrice(model.cost.cache_read)}`,
-      tooltip: "Cache read price",
-    });
-  }
-
-  if (model.limit?.context) {
-    accessories.push({
-      text: formatContextWindow(model.limit.context),
-      tooltip: "Context window",
-    });
-  }
 
   return (
     <List.Item
