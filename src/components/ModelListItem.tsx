@@ -2,7 +2,8 @@ import { List, Icon } from "@raycast/api";
 import { Model } from "../lib/types";
 import { formatPrice, formatContextWindow } from "../lib/formatters";
 import { ModelActions } from "./ModelActions";
-import { CAPABILITIES, STATUS_COLORS } from "../lib/constants";
+import { STATUS_COLORS } from "../lib/constants";
+import { getCapabilityAccessories } from "../lib/accessories";
 
 interface ModelListItemProps {
   model: Model;
@@ -24,30 +25,7 @@ export function ModelListItem({ model, showProvider = true, onAddToComparison }:
   }
 
   // Capability icons
-  if (model.reasoning) {
-    accessories.push({
-      icon: { source: Icon.LightBulb, tintColor: CAPABILITIES.reasoning.color },
-      tooltip: "Reasoning",
-    });
-  }
-  if (model.modalities.input.includes("image")) {
-    accessories.push({
-      icon: { source: Icon.Image, tintColor: CAPABILITIES.vision.color },
-      tooltip: "Vision",
-    });
-  }
-  if (model.modalities.input.includes("audio") || model.modalities.output.includes("audio")) {
-    accessories.push({
-      icon: { source: Icon.Microphone, tintColor: CAPABILITIES.audio.color },
-      tooltip: "Audio",
-    });
-  }
-  if (model.tool_call) {
-    accessories.push({
-      icon: { source: Icon.Hammer, tintColor: CAPABILITIES.tool_call.color },
-      tooltip: "Tool Calling",
-    });
-  }
+  accessories.push(...getCapabilityAccessories(model));
 
   // Context window
   if (model.limit?.context) {

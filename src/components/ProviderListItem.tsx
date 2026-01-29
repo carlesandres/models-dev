@@ -1,6 +1,7 @@
 import { List, Icon, ActionPanel, Action } from "@raycast/api";
 import { Provider, Model } from "../lib/types";
 import { filterByProvider } from "../lib/filters";
+import { getProviderCapabilityAccessories } from "../lib/accessories";
 
 interface ProviderListItemProps {
   provider: Provider;
@@ -11,29 +12,8 @@ interface ProviderListItemProps {
 export function ProviderListItem({ provider, models, onSelect }: ProviderListItemProps) {
   const providerModels = filterByProvider(models, provider.id);
 
-  // Count capabilities
-  const hasReasoning = providerModels.some((m) => m.reasoning);
-  const hasVision = providerModels.some((m) => m.modalities.input.includes("image"));
-  const hasAudio = providerModels.some(
-    (m) => m.modalities.input.includes("audio") || m.modalities.output.includes("audio"),
-  );
-  const hasToolCall = providerModels.some((m) => m.tool_call);
-
-  const accessories: List.Item.Accessory[] = [];
-
   // Capability indicators
-  if (hasReasoning) {
-    accessories.push({ icon: Icon.LightBulb, tooltip: "Has reasoning models" });
-  }
-  if (hasVision) {
-    accessories.push({ icon: Icon.Image, tooltip: "Has vision models" });
-  }
-  if (hasAudio) {
-    accessories.push({ icon: Icon.Microphone, tooltip: "Has audio models" });
-  }
-  if (hasToolCall) {
-    accessories.push({ icon: Icon.Hammer, tooltip: "Has tool-calling models" });
-  }
+  const accessories: List.Item.Accessory[] = getProviderCapabilityAccessories(providerModels);
 
   // Model count
   accessories.push({

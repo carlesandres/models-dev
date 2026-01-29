@@ -6,6 +6,7 @@ import { Model } from "./lib/types";
 import { sortByPrice, filterByMaxPrice } from "./lib/filters";
 import { formatPrice, formatContextWindow, getPricingTier, estimateCost } from "./lib/formatters";
 import { PRICING_TIER_COLORS } from "./lib/constants";
+import { getCapabilityAccessories } from "./lib/accessories";
 
 type PriceFilter = "all" | "free" | "under-1" | "under-5" | "under-15";
 
@@ -122,6 +123,8 @@ function PricingListItem({ model }: { model: Model }) {
   const tierColor = PRICING_TIER_COLORS[tier];
 
   const accessories: List.Item.Accessory[] = [
+    // Capability icons first
+    ...getCapabilityAccessories(model),
     {
       tag: { value: formatPrice(model.cost?.input), color: tierColor },
       tooltip: "Input price",
