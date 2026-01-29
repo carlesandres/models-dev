@@ -6,14 +6,15 @@ import { Model } from "./lib/types";
 import { formatPrice, estimateCost } from "./lib/formatters";
 import { getCapabilityAccessories } from "./lib/accessories";
 
-type PriceFilter = "all" | "free" | "under-1" | "under-5" | "under-15";
+type PriceFilter = "all" | "free" | "non-free" | "under-1" | "under-5" | "under-15";
 
-const PRICE_FILTERS: { id: PriceFilter; label: string; maxPrice?: number }[] = [
+const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
   { id: "all", label: "All Prices" },
-  { id: "free", label: "Free", maxPrice: 0 },
-  { id: "under-1", label: "Under $1/M output", maxPrice: 1 },
-  { id: "under-5", label: "Under $5/M output", maxPrice: 5 },
-  { id: "under-15", label: "Under $15/M output", maxPrice: 15 },
+  { id: "free", label: "Free" },
+  { id: "non-free", label: "Non-Free" },
+  { id: "under-1", label: "Under $1/M output" },
+  { id: "under-5", label: "Under $5/M output" },
+  { id: "under-15", label: "Under $15/M output" },
 ];
 
 export default function PricingExplorer() {
@@ -27,13 +28,22 @@ export default function PricingExplorer() {
     let models = data.models.filter((m) => m.cost?.output !== undefined);
 
     // Apply price filter based on output price
-    const filter = PRICE_FILTERS.find((f) => f.id === priceFilter);
-    if (filter?.maxPrice !== undefined) {
-      if (filter.maxPrice === 0) {
+    switch (priceFilter) {
+      case "free":
         models = models.filter((m) => m.cost?.output === 0);
-      } else {
-        models = models.filter((m) => m.cost && m.cost.output <= filter.maxPrice);
-      }
+        break;
+      case "non-free":
+        models = models.filter((m) => m.cost?.output !== undefined && m.cost.output > 0);
+        break;
+      case "under-1":
+        models = models.filter((m) => m.cost && m.cost.output <= 1);
+        break;
+      case "under-5":
+        models = models.filter((m) => m.cost && m.cost.output <= 5);
+        break;
+      case "under-15":
+        models = models.filter((m) => m.cost && m.cost.output <= 15);
+        break;
     }
 
     // Sort by output price (ascending - cheapest first)
@@ -45,28 +55,6 @@ export default function PricingExplorer() {
 
     return models;
   }, [data?.models, priceFilter]);
-
-  // Group by output pricing tier for visual organization
-  const groupedModels = useMemo(() => {
-    const groups: Record<string, Model[]> = {
-      free: [],
-      budget: [],
-      standard: [],
-      premium: [],
-    };
-
-    for (const model of filteredModels) {
-      const outputPrice = model.cost?.output;
-      let tier: string;
-      if (outputPrice === undefined || outputPrice === 0) tier = "free";
-      else if (outputPrice < 1) tier = "budget";
-      else if (outputPrice < 10) tier = "standard";
-      else tier = "premium";
-      groups[tier].push(model);
-    }
-
-    return groups;
-  }, [filteredModels]);
 
   return (
     <List
@@ -90,37 +78,9 @@ export default function PricingExplorer() {
         icon={Icon.MagnifyingGlass}
       />
 
-      {groupedModels.free.length > 0 && (
-        <List.Section title="Free Output" subtitle={`${groupedModels.free.length} models`}>
-          {groupedModels.free.map((model) => (
-            <PricingListItem key={`${model.providerId}-${model.id}`} model={model} />
-          ))}
-        </List.Section>
-      )}
-
-      {groupedModels.budget.length > 0 && (
-        <List.Section title="Budget (< $1/M output)" subtitle={`${groupedModels.budget.length} models`}>
-          {groupedModels.budget.map((model) => (
-            <PricingListItem key={`${model.providerId}-${model.id}`} model={model} />
-          ))}
-        </List.Section>
-      )}
-
-      {groupedModels.standard.length > 0 && (
-        <List.Section title="Standard ($1-10/M output)" subtitle={`${groupedModels.standard.length} models`}>
-          {groupedModels.standard.map((model) => (
-            <PricingListItem key={`${model.providerId}-${model.id}`} model={model} />
-          ))}
-        </List.Section>
-      )}
-
-      {groupedModels.premium.length > 0 && (
-        <List.Section title="Premium (> $10/M output)" subtitle={`${groupedModels.premium.length} models`}>
-          {groupedModels.premium.map((model) => (
-            <PricingListItem key={`${model.providerId}-${model.id}`} model={model} />
-          ))}
-        </List.Section>
-      )}
+      {filteredModels.map((model) => (
+        <PricingListItem key={`${model.providerId}-${model.id}`} model={model} />
+      ))}
     </List>
   );
 }
