@@ -96,13 +96,22 @@ export default function CompareModels() {
       onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search models to compare..."
       searchBarAccessory={
-        <List.Dropdown tooltip={`${selectedModels.length} selected`} value="info" onChange={() => {}}>
+        <List.Dropdown
+          tooltip={`${selectedModels.length} selected`}
+          value="info"
+          onChange={(value) => {
+            if (value !== "info") {
+              setSelectedModels(selectedModels.filter((m) => `${m.providerId}-${m.id}` !== value));
+            }
+          }}
+        >
           <List.Dropdown.Item title={`${selectedModels.length}/4 models selected`} value="info" />
           {selectedModels.map((m) => (
             <List.Dropdown.Item
               key={`${m.providerId}-${m.id}`}
               title={`${m.name} (${m.providerName})`}
               value={`${m.providerId}-${m.id}`}
+              icon={Icon.XMarkCircle}
             />
           ))}
         </List.Dropdown>
@@ -116,7 +125,7 @@ export default function CompareModels() {
               title={model.name}
               subtitle={model.providerName}
               icon={{ source: model.providerLogo, fallback: Icon.Globe }}
-              accessories={[{ icon: Icon.CheckCircle, tooltip: "Selected" }]}
+              accessories={[{ icon: { source: Icon.CheckCircle, tintColor: "#30D158" }, tooltip: "Selected" }]}
               actions={
                 <ActionPanel>
                   <Action
