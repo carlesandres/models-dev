@@ -32,4 +32,4 @@ Actions available: copy model ID, copy provider/model ID, export as JSON, open o
 
 ## Data Source
 
-Data is fetched from the [models.dev API](https://models.dev/api.json) with stale-while-revalidate caching.
+Data is fetched from the [models.dev API](https://models.dev/api.json).
