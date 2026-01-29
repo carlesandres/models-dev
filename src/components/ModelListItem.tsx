@@ -1,6 +1,6 @@
 import { List, Icon } from "@raycast/api";
 import { Model } from "../lib/types";
-import { formatPrice, formatContextWindow } from "../lib/formatters";
+import { formatPrice } from "../lib/formatters";
 import { ModelActions } from "./ModelActions";
 import { STATUS_COLORS } from "../lib/constants";
 import { getCapabilityAccessories } from "../lib/accessories";
@@ -27,19 +27,17 @@ export function ModelListItem({ model, showProvider = true, onAddToComparison }:
   // Capability icons
   accessories.push(...getCapabilityAccessories(model));
 
-  // Context window
-  if (model.limit?.context) {
-    accessories.push({
-      text: formatContextWindow(model.limit.context),
-      tooltip: "Context window",
-    });
-  }
-
-  // Price
+  // Pricing (input / output)
   if (model.cost?.input !== undefined) {
     accessories.push({
       text: formatPrice(model.cost.input),
-      tooltip: "Input price per million tokens",
+      tooltip: "Input price per 1M tokens",
+    });
+  }
+  if (model.cost?.output !== undefined) {
+    accessories.push({
+      text: formatPrice(model.cost.output),
+      tooltip: "Output price per 1M tokens",
     });
   }
 
