@@ -65,10 +65,10 @@ export default function CompareModels() {
     if (selectedIds.has(modelKey)) {
       setSelectedModels(selectedModels.filter((m) => `${m.providerId}-${m.id}` !== modelKey));
     } else {
-      if (selectedModels.length >= 4) {
+      if (selectedModels.length >= 3) {
         showToast({
           style: Toast.Style.Failure,
-          title: "Maximum 4 models",
+          title: "Maximum 3 models",
           message: "Remove a model before adding another",
         });
         return;
@@ -105,7 +105,7 @@ export default function CompareModels() {
             }
           }}
         >
-          <List.Dropdown.Item title={`${selectedModels.length}/4 models selected`} value="info" />
+          <List.Dropdown.Item title={`${selectedModels.length}/3 models selected`} value="info" />
           {selectedModels.map((m) => (
             <List.Dropdown.Item
               key={`${m.providerId}-${m.id}`}
@@ -118,7 +118,7 @@ export default function CompareModels() {
       }
     >
       {selectedModels.length > 0 && (
-        <List.Section title={`Selected (${selectedModels.length}/4)`}>
+        <List.Section title={`Selected (${selectedModels.length}/3)`}>
           {selectedModels.map((model) => (
             <List.Item
               key={`selected-${model.providerId}-${model.id}`}
