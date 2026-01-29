@@ -1,4 +1,4 @@
-import { List, Detail, Icon, ActionPanel, Action, useNavigation, showToast, Toast } from "@raycast/api";
+import { List, Color, Detail, Icon, ActionPanel, Action, useNavigation, showToast, Toast } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { Model } from "./lib/types";
@@ -142,7 +142,7 @@ export default function CompareModels() {
               title={model.name}
               subtitle={model.providerName}
               icon={{ source: model.providerLogo, fallback: Icon.Globe }}
-              accessories={[{ icon: { source: Icon.CheckCircle, tintColor: "#30D158" }, tooltip: "Selected" }]}
+              accessories={[{ icon: { source: Icon.CheckCircle, tintColor: Color.Green }, tooltip: "Selected" }]}
               actions={
                 <ActionPanel>
                   <Action
