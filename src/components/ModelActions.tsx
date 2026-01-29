@@ -47,7 +47,7 @@ export function ModelActions({ model, onAddToComparison, showViewDetails = true 
       <ActionPanel.Section>
         <Action.CopyToClipboard title="Copy as JSON" content={modelJson} />
         <Action.OpenInBrowser
-          title="Open models.dev in Browser"
+          title="Open Models.dev in Browser"
           url={`https://models.dev`}
           shortcut={{ modifiers: ["cmd"], key: "o" }}
         />
