@@ -34,10 +34,7 @@ ${capabilities.length > 0 ? capabilities.map((c) => `- ${c}`).join("\n") : "- Te
 
 ${(() => {
   if (!model.cost) return "";
-  const rows = [
-    `| Input | ${formatPrice(model.cost.input)} |`,
-    `| Output | ${formatPrice(model.cost.output)} |`,
-  ];
+  const rows = [`| Input | ${formatPrice(model.cost.input)} |`, `| Output | ${formatPrice(model.cost.output)} |`];
   if (model.cost.cache_read !== undefined) rows.push(`| Cache Read | ${formatPrice(model.cost.cache_read)} |`);
   if (model.cost.cache_write !== undefined) rows.push(`| Cache Write | ${formatPrice(model.cost.cache_write)} |`);
   if (model.cost.reasoning !== undefined) rows.push(`| Reasoning | ${formatPrice(model.cost.reasoning)} |`);

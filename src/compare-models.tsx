@@ -70,7 +70,7 @@ export default function CompareModels() {
           m.name.toLowerCase().includes(search) ||
           m.id.toLowerCase().includes(search) ||
           m.providerName.toLowerCase().includes(search) ||
-          (m.family && m.family.toLowerCase().includes(search))
+          (m.family && m.family.toLowerCase().includes(search)),
       );
     }
     return models;
@@ -167,37 +167,37 @@ export default function CompareModels() {
 
       <List.Section title={`${filteredModels.length} models`}>
         {filteredModels.map((model) => (
-            <List.Item
-              key={`${model.providerId}-${model.id}`}
-              title={model.name}
-              subtitle={model.providerName}
-              icon={{ source: model.providerLogo, fallback: Icon.Globe }}
-              accessories={
-                [
-                  model.limit?.context
-                    ? { text: formatContextWindow(model.limit.context), tooltip: "Context" }
-                    : undefined,
-                  model.cost?.input !== undefined
-                    ? { text: formatPrice(model.cost.input), tooltip: "Input price" }
-                    : undefined,
-                ].filter(Boolean) as List.Item.Accessory[]
-              }
-              keywords={[model.providerId, model.providerName, model.family ?? ""]}
-              actions={
-                <ActionPanel>
-                  <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => handleToggleModel(model)} />
-                  {selectedModels.length >= 2 && (
-                    <Action
-                      title="Compare Selected Models"
-                      icon={Icon.SideBySide}
-                      onAction={handleCompare}
-                      shortcut={{ modifiers: ["cmd"], key: "return" }}
-                    />
-                  )}
-                </ActionPanel>
-              }
-            />
-          ))}
+          <List.Item
+            key={`${model.providerId}-${model.id}`}
+            title={model.name}
+            subtitle={model.providerName}
+            icon={{ source: model.providerLogo, fallback: Icon.Globe }}
+            accessories={
+              [
+                model.limit?.context
+                  ? { text: formatContextWindow(model.limit.context), tooltip: "Context" }
+                  : undefined,
+                model.cost?.input !== undefined
+                  ? { text: formatPrice(model.cost.input), tooltip: "Input price" }
+                  : undefined,
+              ].filter(Boolean) as List.Item.Accessory[]
+            }
+            keywords={[model.providerId, model.providerName, model.family ?? ""]}
+            actions={
+              <ActionPanel>
+                <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => handleToggleModel(model)} />
+                {selectedModels.length >= 2 && (
+                  <Action
+                    title="Compare Selected Models"
+                    icon={Icon.SideBySide}
+                    onAction={handleCompare}
+                    shortcut={{ modifiers: ["cmd"], key: "return" }}
+                  />
+                )}
+              </ActionPanel>
+            }
+          />
+        ))}
       </List.Section>
     </List>
   );

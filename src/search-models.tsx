@@ -33,7 +33,7 @@ export default function SearchModels() {
           m.id.toLowerCase().includes(search) ||
           m.providerName.toLowerCase().includes(search) ||
           m.providerId.toLowerCase().includes(search) ||
-          (m.family && m.family.toLowerCase().includes(search))
+          (m.family && m.family.toLowerCase().includes(search)),
       );
     }
 

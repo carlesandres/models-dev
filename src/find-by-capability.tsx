@@ -20,7 +20,7 @@ function CapabilityModels({ capability }: { capability: Capability }) {
         (m) =>
           m.name.toLowerCase().includes(search) ||
           m.id.toLowerCase().includes(search) ||
-          m.providerName.toLowerCase().includes(search)
+          m.providerName.toLowerCase().includes(search),
       );
     }
     return filtered;

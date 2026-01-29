@@ -16,7 +16,7 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
         (m) =>
           m.name.toLowerCase().includes(search) ||
           m.id.toLowerCase().includes(search) ||
-          (m.family && m.family.toLowerCase().includes(search))
+          (m.family && m.family.toLowerCase().includes(search)),
       );
     }
     return filtered;
@@ -49,9 +49,7 @@ export default function BrowseProviders() {
     if (!data?.providers) return [];
     if (!searchText) return data.providers;
     const search = searchText.toLowerCase();
-    return data.providers.filter(
-      (p) => p.name.toLowerCase().includes(search) || p.id.toLowerCase().includes(search)
-    );
+    return data.providers.filter((p) => p.name.toLowerCase().includes(search) || p.id.toLowerCase().includes(search));
   }, [data?.providers, searchText]);
 
   const handleSelectProvider = (providerId: string) => {
@@ -75,7 +73,12 @@ export default function BrowseProviders() {
       />
       <List.Section title={`${filteredProviders.length} providers`}>
         {filteredProviders.map((provider) => (
-          <ProviderListItem key={provider.id} provider={provider} models={data?.models ?? []} onSelect={handleSelectProvider} />
+          <ProviderListItem
+            key={provider.id}
+            provider={provider}
+            models={data?.models ?? []}
+            onSelect={handleSelectProvider}
+          />
         ))}
       </List.Section>
     </List>
