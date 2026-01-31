@@ -98,7 +98,7 @@ export default function CompareModels() {
       showToast({
         style: Toast.Style.Failure,
         title: "Select at least 2 models",
-        message: "Choose 2-4 models to compare",
+        message: "Choose 2-3 models to compare",
       });
       return;
     }
