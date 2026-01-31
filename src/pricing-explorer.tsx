@@ -1,10 +1,7 @@
-import { List, Icon, ActionPanel, Action } from "@raycast/api";
+import { List, Icon } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
-import { ModelDetail } from "./components";
-import { Model } from "./lib/types";
-import { formatPrice, estimateCost } from "./lib/formatters";
-import { getCapabilityAccessories } from "./lib/accessories";
+import { ModelListItem } from "./components";
 
 type PriceFilter =
   | "all"
@@ -125,56 +122,9 @@ export default function PricingExplorer() {
 
       <List.Section title={`${filteredModels.length} models`}>
         {filteredModels.map((model) => (
-          <PricingListItem key={`${model.providerId}-${model.id}`} model={model} />
+          <ModelListItem key={`${model.providerId}-${model.id}`} model={model} />
         ))}
       </List.Section>
     </List>
-  );
-}
-
-function PricingListItem({ model }: { model: Model }) {
-  const accessories: List.Item.Accessory[] = [
-    // Capability icons first
-    ...getCapabilityAccessories(model),
-    {
-      text: formatPrice(model.cost?.input),
-      tooltip: "Input price",
-    },
-    {
-      text: formatPrice(model.cost?.output),
-      tooltip: "Output price",
-    },
-  ];
-
-  return (
-    <List.Item
-      title={model.name}
-      subtitle={model.providerName}
-      icon={{ source: model.providerLogo, fallback: Icon.Globe }}
-      accessories={accessories}
-      keywords={[model.providerId, model.providerName, model.family ?? ""]}
-      actions={
-        <ActionPanel>
-          <Action.Push title="View Details" icon={Icon.Eye} target={<ModelDetail model={model} />} />
-          <Action.CopyToClipboard
-            title="Copy Model ID"
-            content={model.id}
-            shortcut={{ modifiers: ["cmd"], key: "c" }}
-          />
-          <ActionPanel.Section title="Cost Estimates">
-            <Action.CopyToClipboard
-              title="Copy 1M Token Cost"
-              content={`Input: ${formatPrice(model.cost?.input)}, Output: ${formatPrice(model.cost?.output)}`}
-            />
-            {model.cost?.input !== undefined && (
-              <Action.CopyToClipboard
-                title="Copy 100K Token Estimate"
-                content={`100K tokens: Input ${estimateCost(100_000, model.cost.input)}, Output ${estimateCost(100_000, model.cost?.output ?? 0)}`}
-              />
-            )}
-          </ActionPanel.Section>
-        </ActionPanel>
-      }
-    />
   );
 }

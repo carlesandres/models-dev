@@ -2,13 +2,16 @@ import { Action, ActionPanel, Icon } from "@raycast/api";
 import { Model } from "../lib/types";
 import { ModelDetail } from "./ModelDetail";
 
+type ActionPanelChildren = Parameters<typeof ActionPanel>[0]["children"];
+
 interface ModelActionsProps {
   model: Model;
   onAddToComparison?: (model: Model) => void;
   showViewDetails?: boolean;
+  extraActions?: ActionPanelChildren;
 }
 
-export function ModelActions({ model, onAddToComparison, showViewDetails = true }: ModelActionsProps) {
+export function ModelActions({ model, onAddToComparison, showViewDetails = true, extraActions }: ModelActionsProps) {
   const modelJson = JSON.stringify(
     {
       id: model.id,
@@ -63,6 +66,8 @@ export function ModelActions({ model, onAddToComparison, showViewDetails = true 
           />
         </ActionPanel.Section>
       )}
+
+      {extraActions}
     </ActionPanel>
   );
 }

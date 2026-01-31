@@ -1,6 +1,7 @@
-import { List, Color, Detail, Icon, ActionPanel, Action, useNavigation, showToast, Toast } from "@raycast/api";
+import { List, Detail, Icon, ActionPanel, Action, useNavigation, showToast, Toast } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
+import { ModelListItem } from "./components";
 import { Model } from "./lib/types";
 import { formatPrice, formatContextWindow } from "./lib/formatters";
 
@@ -137,14 +138,11 @@ export default function CompareModels() {
       {selectedModels.length > 0 && (
         <List.Section title={`Selected (${selectedModels.length}/3)`}>
           {selectedModels.map((model) => (
-            <List.Item
+            <ModelListItem
               key={`selected-${model.providerId}-${model.id}`}
-              title={model.name}
-              subtitle={model.providerName}
-              icon={{ source: model.providerLogo, fallback: Icon.Globe }}
-              accessories={[{ icon: { source: Icon.CheckCircle, tintColor: Color.Green }, tooltip: "Selected" }]}
-              actions={
-                <ActionPanel>
+              model={model}
+              extraActions={
+                <ActionPanel.Section>
                   <Action
                     title="Remove from Comparison"
                     icon={Icon.MinusCircle}
@@ -158,7 +156,7 @@ export default function CompareModels() {
                       shortcut={{ modifiers: ["cmd"], key: "return" }}
                     />
                   )}
-                </ActionPanel>
+                </ActionPanel.Section>
               }
             />
           ))}
@@ -167,34 +165,21 @@ export default function CompareModels() {
 
       <List.Section title={`${filteredModels.length} models`}>
         {filteredModels.map((model) => (
-          <List.Item
+          <ModelListItem
             key={`${model.providerId}-${model.id}`}
-            title={model.name}
-            subtitle={model.providerName}
-            icon={{ source: model.providerLogo, fallback: Icon.Globe }}
-            accessories={
-              [
-                model.limit?.context
-                  ? { text: formatContextWindow(model.limit.context), tooltip: "Context" }
-                  : undefined,
-                model.cost?.input !== undefined
-                  ? { text: formatPrice(model.cost.input), tooltip: "Input price" }
-                  : undefined,
-              ].filter(Boolean) as List.Item.Accessory[]
-            }
-            keywords={[model.providerId, model.providerName, model.family ?? ""]}
-            actions={
-              <ActionPanel>
-                <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => handleToggleModel(model)} />
-                {selectedModels.length >= 2 && (
+            model={model}
+            onAddToComparison={handleToggleModel}
+            extraActions={
+              selectedModels.length >= 2 ? (
+                <ActionPanel.Section>
                   <Action
                     title="Compare Selected Models"
                     icon={Icon.Switch}
                     onAction={handleCompare}
                     shortcut={{ modifiers: ["cmd"], key: "return" }}
                   />
-                )}
-              </ActionPanel>
+                </ActionPanel.Section>
+              ) : null
             }
           />
         ))}
