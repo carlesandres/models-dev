@@ -2,6 +2,7 @@ import { List, Icon } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListSection } from "./components";
+import { filterBySearchText } from "./lib/filters";
 
 type PriceFilter =
   | "all"
@@ -40,17 +41,6 @@ export default function PricingExplorer() {
 
     // Only include models with output pricing
     let models = data.models.filter((m) => m.cost?.output !== undefined);
-
-    // Filter by search text
-    if (searchText) {
-      const search = searchText.toLowerCase();
-      models = models.filter(
-        (m) =>
-          m.name.toLowerCase().includes(search) ||
-          m.id.toLowerCase().includes(search) ||
-          m.providerName.toLowerCase().includes(search),
-      );
-    }
 
     // Apply price filter based on output price
     switch (priceFilter) {
@@ -93,6 +83,9 @@ export default function PricingExplorer() {
       return priceA - priceB;
     });
 
+    // Filter by search text
+    models = filterBySearchText(models, searchText);
+
     return models;
   }, [data?.models, priceFilter, searchText]);
 
@@ -100,8 +93,8 @@ export default function PricingExplorer() {
     <List
       isLoading={isLoading}
       filtering={false}
-      onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search models by price..."
+      onSearchTextChange={setSearchText}
       searchBarAccessory={
         <List.Dropdown
           tooltip="Filter by Price"
@@ -120,7 +113,7 @@ export default function PricingExplorer() {
         icon={Icon.MagnifyingGlass}
       />
 
-      <ModelListSection models={filteredModels} />
+      <ModelListSection models={filteredModels} title={`${filteredModels.length} models`} />
     </List>
   );
 }

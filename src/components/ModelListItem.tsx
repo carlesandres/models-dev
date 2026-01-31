@@ -50,6 +50,7 @@ export function ModelListItem({ model, onAddToComparison, primaryAction, extraAc
     model.providerId,
     model.providerName,
     model.family ?? "",
+    `${model.name} ${model.providerName}`,
     model.reasoning ? "reasoning" : "",
     model.tool_call ? "tool calling function" : "",
     model.modalities.input.includes("image") ? "vision image" : "",

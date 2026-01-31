@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListSection } from "./components";
 import { Capability, Model } from "./lib/types";
-import { filterByCapability, sortByProviderThenName, filterOutDeprecated } from "./lib/filters";
+import { filterByCapability, filterBySearchText, sortByProviderThenName, filterOutDeprecated } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 
 export default function SearchModels() {
@@ -25,17 +25,7 @@ export default function SearchModels() {
     }
 
     // Filter by search text
-    if (searchText) {
-      const search = searchText.toLowerCase();
-      models = models.filter(
-        (m) =>
-          m.name.toLowerCase().includes(search) ||
-          m.id.toLowerCase().includes(search) ||
-          m.providerName.toLowerCase().includes(search) ||
-          m.providerId.toLowerCase().includes(search) ||
-          (m.family && m.family.toLowerCase().includes(search)),
-      );
-    }
+    models = filterBySearchText(models, searchText);
 
     // Sort by provider, then model name
     models = sortByProviderThenName(models);
@@ -47,8 +37,8 @@ export default function SearchModels() {
     <List
       isLoading={isLoading}
       filtering={false}
-      onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search models by name, provider, or capability..."
+      onSearchTextChange={setSearchText}
       searchBarAccessory={
         <List.Dropdown
           tooltip="Filter by Capability"
@@ -73,7 +63,7 @@ export default function SearchModels() {
         }
         icon={Icon.MagnifyingGlass}
       />
-      <ModelListSection models={filteredModels} />
+      <ModelListSection models={filteredModels} title={`${filteredModels.length} models`} />
     </List>
   );
 }

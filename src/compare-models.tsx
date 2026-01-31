@@ -4,6 +4,7 @@ import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
 import { formatPrice, formatContextWindow } from "./lib/formatters";
+import { filterBySearchText } from "./lib/filters";
 
 function ComparisonView({ models }: { models: Model[] }) {
   // Build comparison markdown table
@@ -64,16 +65,8 @@ export default function CompareModels() {
   const filteredModels = useMemo(() => {
     if (!data?.models) return [];
     let models = data.models.filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`));
-    if (searchText) {
-      const search = searchText.toLowerCase();
-      models = models.filter(
-        (m) =>
-          m.name.toLowerCase().includes(search) ||
-          m.id.toLowerCase().includes(search) ||
-          m.providerName.toLowerCase().includes(search) ||
-          (m.family && m.family.toLowerCase().includes(search)),
-      );
-    }
+    // Filter by search text
+    models = filterBySearchText(models, searchText);
     return models;
   }, [data?.models, selectedIds, searchText]);
 
@@ -110,9 +103,8 @@ export default function CompareModels() {
     <List
       isLoading={isLoading}
       filtering={false}
-      searchText={searchText}
-      onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search models to compare..."
+      onSearchTextChange={setSearchText}
       searchBarAccessory={
         <List.Dropdown
           tooltip={`${selectedModels.length} selected`}
@@ -167,6 +159,7 @@ export default function CompareModels() {
 
       <ModelListSection
         models={filteredModels}
+        title={`${filteredModels.length} models`}
         getPrimaryAction={(model) => (
           <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => handleToggleModel(model)} />
         )}

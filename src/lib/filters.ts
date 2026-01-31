@@ -1,6 +1,41 @@
 import { Model, Capability } from "./types";
 
 /**
+ * Filter models by search text (case-insensitive)
+ * Matches against: name, providerName, providerId, family, and capabilities
+ */
+export function filterBySearchText(models: Model[], searchText: string): Model[] {
+  if (!searchText.trim()) return models;
+
+  const query = searchText.toLowerCase().trim();
+  const queryTerms = query.split(/\s+/);
+
+  return models.filter((model) => {
+    // Build searchable text from model properties
+    const searchableText = [
+      model.name,
+      model.providerName,
+      model.providerId,
+      model.family ?? "",
+      model.reasoning ? "reasoning" : "",
+      model.tool_call ? "tool calling function" : "",
+      model.modalities.input.includes("image") ? "vision image" : "",
+      model.modalities.input.includes("audio") ? "audio" : "",
+      model.modalities.input.includes("video") ? "video" : "",
+      model.modalities.input.includes("pdf") ? "pdf" : "",
+      model.structured_output ? "structured output json" : "",
+      model.open_weights ? "open weights" : "",
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    // All query terms must match somewhere in the searchable text
+    return queryTerms.every((term) => searchableText.includes(term));
+  });
+}
+
+/**
  * Filter models by capability
  */
 export function filterByCapability(models: Model[], capability: Capability): Model[] {

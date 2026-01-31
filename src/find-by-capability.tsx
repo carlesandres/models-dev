@@ -1,28 +1,21 @@
 import { List, Icon, ActionPanel, Action, useNavigation } from "@raycast/api";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListSection } from "./components";
-import { filterByCapability, countByCapability } from "./lib/filters";
+import { filterByCapability, filterBySearchText, countByCapability } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 import { Capability } from "./lib/types";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 function CapabilityModels({ capability }: { capability: Capability }) {
   const { data, isLoading } = useModelsData();
-  const [searchText, setSearchText] = useState("");
   const capInfo = CAPABILITIES[capability];
+  const [searchText, setSearchText] = useState("");
 
   const models = useMemo(() => {
     let filtered = data?.models ? filterByCapability(data.models, capability) : [];
-    if (searchText) {
-      const search = searchText.toLowerCase();
-      filtered = filtered.filter(
-        (m) =>
-          m.name.toLowerCase().includes(search) ||
-          m.id.toLowerCase().includes(search) ||
-          m.providerName.toLowerCase().includes(search),
-      );
-    }
+    // Filter by search text
+    filtered = filterBySearchText(filtered, searchText);
     return filtered;
   }, [data?.models, capability, searchText]);
 
@@ -30,16 +23,16 @@ function CapabilityModels({ capability }: { capability: Capability }) {
     <List
       isLoading={isLoading}
       filtering={false}
-      onSearchTextChange={setSearchText}
       navigationTitle={capInfo.label}
       searchBarPlaceholder={`Search models with ${capInfo.label.toLowerCase()}...`}
+      onSearchTextChange={setSearchText}
     >
       <List.EmptyView
         title="No Models Found"
         description={`No models found with ${capInfo.label} capability`}
         icon={Icon.XMarkCircle}
       />
-      <ModelListSection models={models} />
+      <ModelListSection models={models} title={`${models.length} models`} />
     </List>
   );
 }
