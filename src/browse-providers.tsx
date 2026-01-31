@@ -2,14 +2,20 @@ import { List, Icon, useNavigation } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ProviderListItem, ModelListItem } from "./components";
-import { filterByProvider } from "./lib/filters";
+import { filterByCapability, filterByProvider } from "./lib/filters";
+import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
+import { Capability } from "./lib/types";
 
 function ProviderModels({ providerId, providerName }: { providerId: string; providerName: string }) {
   const { data, isLoading } = useModelsData();
   const [searchText, setSearchText] = useState("");
+  const [capability, setCapability] = useState<Capability | "all">("all");
 
   const models = useMemo(() => {
     let filtered = data?.models ? filterByProvider(data.models, providerId) : [];
+    if (capability !== "all") {
+      filtered = filterByCapability(filtered, capability);
+    }
     if (searchText) {
       const search = searchText.toLowerCase();
       filtered = filtered.filter(
@@ -20,7 +26,7 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
       );
     }
     return filtered;
-  }, [data?.models, providerId, searchText]);
+  }, [data?.models, providerId, capability, searchText]);
 
   return (
     <List
@@ -29,8 +35,30 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
       onSearchTextChange={setSearchText}
       navigationTitle={providerName}
       searchBarPlaceholder={`Search ${providerName} models...`}
+      searchBarAccessory={
+        <List.Dropdown
+          tooltip="Filter by Capability"
+          value={capability}
+          onChange={(value) => setCapability(value as Capability | "all")}
+        >
+          <List.Dropdown.Item title="All Capabilities" value="all" icon={Icon.List} />
+          <List.Dropdown.Section title="Capabilities">
+            {ALL_CAPABILITIES.map((cap) => (
+              <List.Dropdown.Item key={cap} title={CAPABILITIES[cap].label} value={cap} icon={CAPABILITIES[cap].icon} />
+            ))}
+          </List.Dropdown.Section>
+        </List.Dropdown>
+      }
     >
-      <List.EmptyView title="No Models" description={`No models found for ${providerName}`} icon={Icon.XMarkCircle} />
+      <List.EmptyView
+        title="No Models"
+        description={
+          capability !== "all"
+            ? `No ${providerName} models found with ${CAPABILITIES[capability].label} capability`
+            : `No models found for ${providerName}`
+        }
+        icon={Icon.XMarkCircle}
+      />
       <List.Section title={`${models.length} models`}>
         {models.map((model) => (
           <ModelListItem key={`${model.providerId}-${model.id}`} model={model} />
