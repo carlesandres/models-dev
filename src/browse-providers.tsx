@@ -2,32 +2,27 @@ import { List, Icon, useNavigation } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ProviderListItem, ModelListSection } from "./components";
-import { filterByCapability, filterByProvider, filterBySearchText } from "./lib/filters";
+import { filterByCapability, filterByProvider } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 import { Capability } from "./lib/types";
 
 function ProviderModels({ providerId, providerName }: { providerId: string; providerName: string }) {
   const { data, isLoading } = useModelsData();
   const [capability, setCapability] = useState<Capability | "all">("all");
-  const [searchText, setSearchText] = useState("");
 
   const models = useMemo(() => {
     let filtered = data?.models ? filterByProvider(data.models, providerId) : [];
     if (capability !== "all") {
       filtered = filterByCapability(filtered, capability);
     }
-    // Filter by search text
-    filtered = filterBySearchText(filtered, searchText);
     return filtered;
-  }, [data?.models, providerId, capability, searchText]);
+  }, [data?.models, providerId, capability]);
 
   return (
     <List
       isLoading={isLoading}
-      filtering={false}
       navigationTitle={providerName}
       searchBarPlaceholder={`Search ${providerName} models...`}
-      onSearchTextChange={setSearchText}
       searchBarAccessory={
         <List.Dropdown
           tooltip="Filter by Capability"
@@ -52,7 +47,7 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
         }
         icon={Icon.XMarkCircle}
       />
-      <ModelListSection models={models} title={`${models.length} models`} />
+      <ModelListSection models={models} />
     </List>
   );
 }
@@ -60,17 +55,6 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
 export default function BrowseProviders() {
   const { data, isLoading } = useModelsData();
   const { push } = useNavigation();
-  const [searchText, setSearchText] = useState("");
-
-  const filteredProviders = useMemo(() => {
-    if (!data?.providers) return [];
-    if (!searchText.trim()) return data.providers;
-
-    const query = searchText.toLowerCase().trim();
-    return data.providers.filter(
-      (provider) => provider.name.toLowerCase().includes(query) || provider.id.toLowerCase().includes(query),
-    );
-  }, [data?.providers, searchText]);
 
   const handleSelectProvider = (providerId: string) => {
     const provider = data?.providers.find((p) => p.id === providerId);
@@ -80,19 +64,14 @@ export default function BrowseProviders() {
   };
 
   return (
-    <List
-      isLoading={isLoading}
-      filtering={false}
-      searchBarPlaceholder="Search providers..."
-      onSearchTextChange={setSearchText}
-    >
+    <List isLoading={isLoading} searchBarPlaceholder="Search providers...">
       <List.EmptyView
         title="No Providers Found"
         description="No providers match your search"
         icon={Icon.MagnifyingGlass}
       />
-      <List.Section title={`${filteredProviders.length} providers`}>
-        {filteredProviders.map((provider) => (
+      <List.Section>
+        {(data?.providers ?? []).map((provider) => (
           <ProviderListItem
             key={provider.id}
             provider={provider}

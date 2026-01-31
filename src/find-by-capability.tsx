@@ -1,38 +1,32 @@
 import { List, Icon, ActionPanel, Action, useNavigation } from "@raycast/api";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListSection } from "./components";
-import { filterByCapability, filterBySearchText, countByCapability } from "./lib/filters";
+import { filterByCapability, countByCapability } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 import { Capability } from "./lib/types";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 function CapabilityModels({ capability }: { capability: Capability }) {
   const { data, isLoading } = useModelsData();
   const capInfo = CAPABILITIES[capability];
-  const [searchText, setSearchText] = useState("");
 
   const models = useMemo(() => {
-    let filtered = data?.models ? filterByCapability(data.models, capability) : [];
-    // Filter by search text
-    filtered = filterBySearchText(filtered, searchText);
-    return filtered;
-  }, [data?.models, capability, searchText]);
+    return data?.models ? filterByCapability(data.models, capability) : [];
+  }, [data?.models, capability]);
 
   return (
     <List
       isLoading={isLoading}
-      filtering={false}
       navigationTitle={capInfo.label}
       searchBarPlaceholder={`Search models with ${capInfo.label.toLowerCase()}...`}
-      onSearchTextChange={setSearchText}
     >
       <List.EmptyView
         title="No Models Found"
         description={`No models found with ${capInfo.label} capability`}
         icon={Icon.XMarkCircle}
       />
-      <ModelListSection models={models} title={`${models.length} models`} />
+      <ModelListSection models={models} />
     </List>
   );
 }

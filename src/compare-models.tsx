@@ -4,7 +4,6 @@ import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
 import { formatPrice, formatContextWindow } from "./lib/formatters";
-import { filterBySearchText } from "./lib/filters";
 
 function ComparisonView({ models }: { models: Model[] }) {
   // Build comparison markdown table
@@ -58,17 +57,13 @@ export default function CompareModels() {
   const { data, isLoading } = useModelsData();
   const { push } = useNavigation();
   const [selectedModels, setSelectedModels] = useState<Model[]>([]);
-  const [searchText, setSearchText] = useState("");
 
   const selectedIds = useMemo(() => new Set(selectedModels.map((m) => `${m.providerId}-${m.id}`)), [selectedModels]);
 
-  const filteredModels = useMemo(() => {
+  const availableModels = useMemo(() => {
     if (!data?.models) return [];
-    let models = data.models.filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`));
-    // Filter by search text
-    models = filterBySearchText(models, searchText);
-    return models;
-  }, [data?.models, selectedIds, searchText]);
+    return data.models.filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`));
+  }, [data?.models, selectedIds]);
 
   const handleToggleModel = (model: Model) => {
     const modelKey = `${model.providerId}-${model.id}`;
@@ -102,9 +97,7 @@ export default function CompareModels() {
   return (
     <List
       isLoading={isLoading}
-      filtering={false}
       searchBarPlaceholder="Search models to compare..."
-      onSearchTextChange={setSearchText}
       searchBarAccessory={
         <List.Dropdown
           tooltip={`${selectedModels.length} selected`}
@@ -158,8 +151,7 @@ export default function CompareModels() {
       )}
 
       <ModelListSection
-        models={filteredModels}
-        title={`${filteredModels.length} models`}
+        models={availableModels}
         getPrimaryAction={(model) => (
           <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => handleToggleModel(model)} />
         )}

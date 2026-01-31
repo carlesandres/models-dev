@@ -3,13 +3,12 @@ import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListSection } from "./components";
 import { Capability, Model } from "./lib/types";
-import { filterByCapability, filterBySearchText, sortByProviderThenName, filterOutDeprecated } from "./lib/filters";
+import { filterByCapability, sortByProviderThenName, filterOutDeprecated } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 
 export default function SearchModels() {
   const { data, isLoading } = useModelsData();
   const [capability, setCapability] = useState<Capability | "all">("all");
-  const [searchText, setSearchText] = useState("");
 
   const filteredModels = useMemo(() => {
     if (!data?.models) return [];
@@ -19,26 +18,21 @@ export default function SearchModels() {
     // Filter out deprecated models
     models = filterOutDeprecated(models);
 
-    // Filter by capability
+    // Filter by capability dropdown
     if (capability !== "all") {
       models = filterByCapability(models, capability);
     }
-
-    // Filter by search text
-    models = filterBySearchText(models, searchText);
 
     // Sort by provider, then model name
     models = sortByProviderThenName(models);
 
     return models;
-  }, [data?.models, capability, searchText]);
+  }, [data?.models, capability]);
 
   return (
     <List
       isLoading={isLoading}
-      filtering={false}
       searchBarPlaceholder="Search models by name, provider, or capability..."
-      onSearchTextChange={setSearchText}
       searchBarAccessory={
         <List.Dropdown
           tooltip="Filter by Capability"
@@ -63,7 +57,7 @@ export default function SearchModels() {
         }
         icon={Icon.MagnifyingGlass}
       />
-      <ModelListSection models={filteredModels} title={`${filteredModels.length} models`} />
+      <ModelListSection models={filteredModels} />
     </List>
   );
 }
