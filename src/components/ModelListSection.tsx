@@ -22,7 +22,7 @@ export function ModelListSection({
   if (models.length === 0) return null;
 
   return (
-    <List.Section title={title ?? `${models.length} models`}>
+    <List.Section title={title}>
       {models.map((model) => (
         <ModelListItem
           key={`${model.providerId}-${model.id}`}
