@@ -1,7 +1,7 @@
 import { List, Icon, useNavigation } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
-import { ProviderListItem, ModelListItem } from "./components";
+import { ProviderListItem, ModelListSection } from "./components";
 import { filterByCapability, filterByProvider } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 import { Capability } from "./lib/types";
@@ -59,11 +59,7 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
         }
         icon={Icon.XMarkCircle}
       />
-      <List.Section title={`${models.length} models`}>
-        {models.map((model) => (
-          <ModelListItem key={`${model.providerId}-${model.id}`} model={model} />
-        ))}
-      </List.Section>
+      <ModelListSection models={models} />
     </List>
   );
 }

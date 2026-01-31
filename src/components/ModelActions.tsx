@@ -8,10 +8,17 @@ interface ModelActionsProps {
   model: Model;
   onAddToComparison?: (model: Model) => void;
   showViewDetails?: boolean;
+  primaryAction?: ActionPanelChildren;
   extraActions?: ActionPanelChildren;
 }
 
-export function ModelActions({ model, onAddToComparison, showViewDetails = true, extraActions }: ModelActionsProps) {
+export function ModelActions({
+  model,
+  onAddToComparison,
+  showViewDetails = true,
+  primaryAction,
+  extraActions,
+}: ModelActionsProps) {
   const modelJson = JSON.stringify(
     {
       id: model.id,
@@ -37,6 +44,7 @@ export function ModelActions({ model, onAddToComparison, showViewDetails = true,
 
   return (
     <ActionPanel>
+      {primaryAction && <ActionPanel.Section>{primaryAction}</ActionPanel.Section>}
       <ActionPanel.Section>
         {showViewDetails && <Action.Push title="View Details" icon={Icon.Eye} target={<ModelDetail model={model} />} />}
         <Action.CopyToClipboard title="Copy Model ID" content={model.id} shortcut={{ modifiers: ["cmd"], key: "." }} />

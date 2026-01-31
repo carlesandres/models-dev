@@ -1,7 +1,7 @@
 import { List, Detail, Icon, ActionPanel, Action, useNavigation, showToast, Toast } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
-import { ModelListItem } from "./components";
+import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
 import { formatPrice, formatContextWindow } from "./lib/formatters";
 
@@ -141,49 +141,48 @@ export default function CompareModels() {
             <ModelListItem
               key={`selected-${model.providerId}-${model.id}`}
               model={model}
+              primaryAction={
+                <Action
+                  title="Remove from Comparison"
+                  icon={Icon.MinusCircle}
+                  onAction={() => handleToggleModel(model)}
+                />
+              }
               extraActions={
-                <ActionPanel.Section>
-                  <Action
-                    title="Remove from Comparison"
-                    icon={Icon.MinusCircle}
-                    onAction={() => handleToggleModel(model)}
-                  />
-                  {selectedModels.length >= 2 && (
+                selectedModels.length >= 2 ? (
+                  <ActionPanel.Section>
                     <Action
                       title="Compare Selected Models"
                       icon={Icon.Switch}
                       onAction={handleCompare}
                       shortcut={{ modifiers: ["cmd"], key: "return" }}
                     />
-                  )}
-                </ActionPanel.Section>
+                  </ActionPanel.Section>
+                ) : null
               }
             />
           ))}
         </List.Section>
       )}
 
-      <List.Section title={`${filteredModels.length} models`}>
-        {filteredModels.map((model) => (
-          <ModelListItem
-            key={`${model.providerId}-${model.id}`}
-            model={model}
-            onAddToComparison={handleToggleModel}
-            extraActions={
-              selectedModels.length >= 2 ? (
-                <ActionPanel.Section>
-                  <Action
-                    title="Compare Selected Models"
-                    icon={Icon.Switch}
-                    onAction={handleCompare}
-                    shortcut={{ modifiers: ["cmd"], key: "return" }}
-                  />
-                </ActionPanel.Section>
-              ) : null
-            }
-          />
-        ))}
-      </List.Section>
+      <ModelListSection
+        models={filteredModels}
+        getPrimaryAction={(model) => (
+          <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => handleToggleModel(model)} />
+        )}
+        extraActions={
+          selectedModels.length >= 2 ? (
+            <ActionPanel.Section>
+              <Action
+                title="Compare Selected Models"
+                icon={Icon.Switch}
+                onAction={handleCompare}
+                shortcut={{ modifiers: ["cmd"], key: "return" }}
+              />
+            </ActionPanel.Section>
+          ) : null
+        }
+      />
     </List>
   );
 }

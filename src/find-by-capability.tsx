@@ -1,6 +1,6 @@
 import { List, Icon, ActionPanel, Action, useNavigation } from "@raycast/api";
 import { useModelsData } from "./hooks/useModelsData";
-import { ModelListItem } from "./components";
+import { ModelListSection } from "./components";
 import { filterByCapability, countByCapability } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 import { Capability } from "./lib/types";
@@ -39,11 +39,7 @@ function CapabilityModels({ capability }: { capability: Capability }) {
         description={`No models found with ${capInfo.label} capability`}
         icon={Icon.XMarkCircle}
       />
-      <List.Section title={`${models.length} models`}>
-        {models.map((model) => (
-          <ModelListItem key={`${model.providerId}-${model.id}`} model={model} />
-        ))}
-      </List.Section>
+      <ModelListSection models={models} />
     </List>
   );
 }

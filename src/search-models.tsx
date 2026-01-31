@@ -1,7 +1,7 @@
 import { List, Icon } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
-import { ModelListItem } from "./components";
+import { ModelListSection } from "./components";
 import { Capability, Model } from "./lib/types";
 import { filterByCapability, sortByProviderThenName, filterOutDeprecated } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
@@ -73,11 +73,7 @@ export default function SearchModels() {
         }
         icon={Icon.MagnifyingGlass}
       />
-      <List.Section title={`${filteredModels.length} models`}>
-        {filteredModels.map((model) => (
-          <ModelListItem key={`${model.providerId}-${model.id}`} model={model} />
-        ))}
-      </List.Section>
+      <ModelListSection models={filteredModels} />
     </List>
   );
 }

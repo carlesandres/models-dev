@@ -1,7 +1,7 @@
 import { List, Icon } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
-import { ModelListItem } from "./components";
+import { ModelListSection } from "./components";
 
 type PriceFilter =
   | "all"
@@ -120,11 +120,7 @@ export default function PricingExplorer() {
         icon={Icon.MagnifyingGlass}
       />
 
-      <List.Section title={`${filteredModels.length} models`}>
-        {filteredModels.map((model) => (
-          <ModelListItem key={`${model.providerId}-${model.id}`} model={model} />
-        ))}
-      </List.Section>
+      <ModelListSection models={filteredModels} />
     </List>
   );
 }

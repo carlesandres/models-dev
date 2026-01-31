@@ -11,10 +11,11 @@ type ActionPanelChildren = Parameters<typeof ActionPanel>[0]["children"];
 interface ModelListItemProps {
   model: Model;
   onAddToComparison?: (model: Model) => void;
+  primaryAction?: ActionPanelChildren;
   extraActions?: ActionPanelChildren;
 }
 
-export function ModelListItem({ model, onAddToComparison, extraActions }: ModelListItemProps) {
+export function ModelListItem({ model, onAddToComparison, primaryAction, extraActions }: ModelListItemProps) {
   const accessories: List.Item.Accessory[] = [];
 
   // Status indicator (alpha, beta, deprecated)
@@ -63,7 +64,14 @@ export function ModelListItem({ model, onAddToComparison, extraActions }: ModelL
       icon={{ source: model.providerLogo, fallback: Icon.Globe }}
       accessories={accessories}
       keywords={keywords}
-      actions={<ModelActions model={model} onAddToComparison={onAddToComparison} extraActions={extraActions} />}
+      actions={
+        <ModelActions
+          model={model}
+          onAddToComparison={onAddToComparison}
+          primaryAction={primaryAction}
+          extraActions={extraActions}
+        />
+      }
     />
   );
 }
