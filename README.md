@@ -12,10 +12,6 @@ Search all models by name, provider, or family. Filter by capability: reasoning,
 
 List all providers and drill into their model offerings. View model counts and access provider documentation.
 
-### Find by Capability
-
-Select a capability category to see all models that support it. Categories include reasoning, tool calling, vision, audio, video, PDF, structured output, and open weights.
-
 ### Compare Models
 
 Select up to three models for side-by-side comparison. View pricing, context windows, and capabilities in a table. Export comparisons as markdown.

@@ -51,13 +51,6 @@
       "mode": "view"
     },
     {
-      "name": "find-by-capability",
-      "title": "Find by Capability",
-      "subtitle": "Models Dev",
-      "description": "Find models that support specific capabilities",
-      "mode": "view"
-    },
-    {
       "name": "compare-models",
       "title": "Compare Models",
       "subtitle": "Models Dev",
