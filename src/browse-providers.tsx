@@ -56,11 +56,11 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
   );
 }
 
-export default function BrowseProviders() {
+export default function SearchAIProviders() {
   const { data, isLoading } = useModelsData();
   const { push } = useNavigation();
   const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const navigationTitle = lastUpdated ? `Browse Providers · Updated ${lastUpdated}` : "Browse Providers";
+  const navigationTitle = lastUpdated ? `Search AI Providers · Updated ${lastUpdated}` : "Search AI Providers";
   const sectionTitle = lastUpdated ? `Providers · Updated ${lastUpdated}` : undefined;
 
   const modelsByProvider = useMemo(() => {

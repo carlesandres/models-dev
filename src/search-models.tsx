@@ -8,11 +8,11 @@ import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 import { getCacheTimestamp } from "./lib/api";
 import { formatUpdatedAt } from "./lib/formatters";
 
-export default function SearchModels() {
+export default function SearchAIModels() {
   const { data, isLoading } = useModelsData();
   const [capability, setCapability] = useState<Capability | "all">("all");
   const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const navigationTitle = lastUpdated ? `Search Models · Updated ${lastUpdated}` : "Search Models";
+  const navigationTitle = lastUpdated ? `Search AI Models · Updated ${lastUpdated}` : "Search AI Models";
   const sectionTitle = lastUpdated ? `Models · Updated ${lastUpdated}` : undefined;
 
   const filteredModels = useMemo(() => {

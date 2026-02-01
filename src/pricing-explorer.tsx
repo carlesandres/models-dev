@@ -32,11 +32,11 @@ const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
   { id: "over-15", label: "Over $15/M output" },
 ];
 
-export default function PricingExplorer() {
+export default function AIModelsByPrice() {
   const { data, isLoading } = useModelsData();
   const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
   const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const navigationTitle = lastUpdated ? `Pricing Explorer · Updated ${lastUpdated}` : "Pricing Explorer";
+  const navigationTitle = lastUpdated ? `AI Models by Price · Updated ${lastUpdated}` : "AI Models by Price";
   const sectionTitle = lastUpdated ? `Models · Updated ${lastUpdated}` : undefined;
 
   const filteredModels = useMemo(() => {

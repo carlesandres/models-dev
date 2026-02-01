@@ -54,12 +54,12 @@ function ComparisonView({ models }: { models: Model[] }) {
   );
 }
 
-export default function CompareModels() {
+export default function CompareAIModels() {
   const { data, isLoading } = useModelsData();
   const { push } = useNavigation();
   const [selectedModels, setSelectedModels] = useState<Model[]>([]);
   const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const navigationTitle = lastUpdated ? `Compare Models · Updated ${lastUpdated}` : "Compare Models";
+  const navigationTitle = lastUpdated ? `Compare AI Models · Updated ${lastUpdated}` : "Compare AI Models";
   const availableTitle = lastUpdated
     ? selectedModels.length > 0
       ? `Available · Updated ${lastUpdated}`
