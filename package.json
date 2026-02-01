@@ -63,6 +63,14 @@
       "subtitle": "Models Dev",
       "description": "Select models to compare side-by-side",
       "mode": "view"
+    },
+    {
+      "name": "background-sync",
+      "title": "Background Sync",
+      "subtitle": "Models Dev",
+      "description": "Pre-warm models cache in the background",
+      "mode": "no-view",
+      "interval": "1h"
     }
   ],
   "dependencies": {
