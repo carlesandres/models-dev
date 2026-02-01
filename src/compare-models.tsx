@@ -3,7 +3,8 @@ import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
-import { formatPrice, formatContextWindow } from "./lib/formatters";
+import { getCacheTimestamp } from "./lib/api";
+import { formatPrice, formatContextWindow, formatUpdatedAt } from "./lib/formatters";
 
 function ComparisonView({ models }: { models: Model[] }) {
   // Build comparison markdown table
@@ -57,6 +58,15 @@ export default function CompareModels() {
   const { data, isLoading } = useModelsData();
   const { push } = useNavigation();
   const [selectedModels, setSelectedModels] = useState<Model[]>([]);
+  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
+  const navigationTitle = lastUpdated ? `Compare Models · Updated ${lastUpdated}` : "Compare Models";
+  const availableTitle = lastUpdated
+    ? selectedModels.length > 0
+      ? `Available · Updated ${lastUpdated}`
+      : `Models · Updated ${lastUpdated}`
+    : selectedModels.length > 0
+      ? "Available"
+      : undefined;
 
   const selectedIds = useMemo(() => new Set(selectedModels.map((m) => `${m.providerId}-${m.id}`)), [selectedModels]);
 
@@ -96,7 +106,8 @@ export default function CompareModels() {
 
   return (
     <List
-      isLoading={isLoading}
+      isLoading={isLoading && !(data?.models?.length ?? 0)}
+      navigationTitle={navigationTitle}
       searchBarPlaceholder="Search models to compare..."
       searchBarAccessory={
         <List.Dropdown
@@ -152,6 +163,7 @@ export default function CompareModels() {
 
       <ModelListSection
         models={availableModels}
+        title={availableTitle}
         getPrimaryAction={(model) => (
           <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => handleToggleModel(model)} />
         )}

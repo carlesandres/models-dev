@@ -2,6 +2,8 @@ import { List, Icon } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListSection } from "./components";
+import { getCacheTimestamp } from "./lib/api";
+import { formatUpdatedAt } from "./lib/formatters";
 
 type PriceFilter =
   | "all"
@@ -33,6 +35,9 @@ const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
 export default function PricingExplorer() {
   const { data, isLoading } = useModelsData();
   const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
+  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
+  const navigationTitle = lastUpdated ? `Pricing Explorer · Updated ${lastUpdated}` : "Pricing Explorer";
+  const sectionTitle = lastUpdated ? `Models · Updated ${lastUpdated}` : undefined;
 
   const filteredModels = useMemo(() => {
     if (!data?.models) return [];
@@ -86,7 +91,8 @@ export default function PricingExplorer() {
 
   return (
     <List
-      isLoading={isLoading}
+      isLoading={isLoading && !(data?.models?.length ?? 0)}
+      navigationTitle={navigationTitle}
       searchBarPlaceholder="Search models..."
       searchBarAccessory={
         <List.Dropdown
@@ -106,7 +112,7 @@ export default function PricingExplorer() {
         icon={Icon.MagnifyingGlass}
       />
 
-      <ModelListSection models={filteredModels} />
+      <ModelListSection models={filteredModels} title={sectionTitle} />
     </List>
   );
 }

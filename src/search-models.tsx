@@ -5,10 +5,15 @@ import { ModelListSection } from "./components";
 import { Capability, Model } from "./lib/types";
 import { filterByCapability, sortByProviderThenName, filterOutDeprecated } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
+import { getCacheTimestamp } from "./lib/api";
+import { formatUpdatedAt } from "./lib/formatters";
 
 export default function SearchModels() {
   const { data, isLoading } = useModelsData();
   const [capability, setCapability] = useState<Capability | "all">("all");
+  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
+  const navigationTitle = lastUpdated ? `Search Models · Updated ${lastUpdated}` : "Search Models";
+  const sectionTitle = lastUpdated ? `Models · Updated ${lastUpdated}` : undefined;
 
   const filteredModels = useMemo(() => {
     if (!data?.models) return [];
@@ -31,7 +36,8 @@ export default function SearchModels() {
 
   return (
     <List
-      isLoading={isLoading}
+      isLoading={isLoading && !(data?.models?.length ?? 0)}
+      navigationTitle={navigationTitle}
       searchBarPlaceholder="Search models by name, provider, or capability..."
       searchBarAccessory={
         <List.Dropdown
@@ -57,7 +63,7 @@ export default function SearchModels() {
         }
         icon={Icon.MagnifyingGlass}
       />
-      <ModelListSection models={filteredModels} />
+      <ModelListSection models={filteredModels} title={sectionTitle} />
     </List>
   );
 }

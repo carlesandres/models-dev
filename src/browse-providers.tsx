@@ -4,11 +4,15 @@ import { useModelsData } from "./hooks/useModelsData";
 import { ProviderListItem, ModelListSection } from "./components";
 import { filterByCapability, filterByProvider } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
-import { Capability } from "./lib/types";
+import { Capability, Model } from "./lib/types";
+import { getCacheTimestamp } from "./lib/api";
+import { formatUpdatedAt } from "./lib/formatters";
 
 function ProviderModels({ providerId, providerName }: { providerId: string; providerName: string }) {
   const { data, isLoading } = useModelsData();
   const [capability, setCapability] = useState<Capability | "all">("all");
+  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
+  const sectionTitle = lastUpdated ? `Models · Updated ${lastUpdated}` : undefined;
 
   const models = useMemo(() => {
     let filtered = data?.models ? filterByProvider(data.models, providerId) : [];
@@ -20,7 +24,7 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
 
   return (
     <List
-      isLoading={isLoading}
+      isLoading={isLoading && !(data?.models?.length ?? 0)}
       navigationTitle={providerName}
       searchBarPlaceholder={`Search ${providerName} models...`}
       searchBarAccessory={
@@ -47,7 +51,7 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
         }
         icon={Icon.XMarkCircle}
       />
-      <ModelListSection models={models} />
+      <ModelListSection models={models} title={sectionTitle} />
     </List>
   );
 }
@@ -55,6 +59,19 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
 export default function BrowseProviders() {
   const { data, isLoading } = useModelsData();
   const { push } = useNavigation();
+  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
+  const navigationTitle = lastUpdated ? `Browse Providers · Updated ${lastUpdated}` : "Browse Providers";
+  const sectionTitle = lastUpdated ? `Providers · Updated ${lastUpdated}` : undefined;
+
+  const modelsByProvider = useMemo(() => {
+    const map = new Map<string, Model[]>();
+    for (const model of data?.models ?? []) {
+      const existing = map.get(model.providerId) ?? [];
+      existing.push(model);
+      map.set(model.providerId, existing);
+    }
+    return map;
+  }, [data?.models]);
 
   const handleSelectProvider = (providerId: string) => {
     const provider = data?.providers.find((p) => p.id === providerId);
@@ -64,18 +81,22 @@ export default function BrowseProviders() {
   };
 
   return (
-    <List isLoading={isLoading} searchBarPlaceholder="Search providers...">
+    <List
+      isLoading={isLoading && !(data?.providers?.length ?? 0)}
+      navigationTitle={navigationTitle}
+      searchBarPlaceholder="Search providers..."
+    >
       <List.EmptyView
         title="No Providers Found"
         description="No providers match your search"
         icon={Icon.MagnifyingGlass}
       />
-      <List.Section>
+      <List.Section title={sectionTitle}>
         {(data?.providers ?? []).map((provider) => (
           <ProviderListItem
             key={provider.id}
             provider={provider}
-            models={data?.models ?? []}
+            providerModels={modelsByProvider.get(provider.id) ?? []}
             onSelect={handleSelectProvider}
           />
         ))}
