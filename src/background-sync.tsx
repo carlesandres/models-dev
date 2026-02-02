@@ -11,5 +11,7 @@ export default async function BackgroundSync() {
 
   try {
     await fetchModelsData();
-  } catch {}
+  } catch (error) {
+    console.error("Background sync failed:", error);
+  }
 }
