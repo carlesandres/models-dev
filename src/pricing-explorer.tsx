@@ -2,8 +2,6 @@ import { List, Icon } from "@raycast/api";
 import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListSection } from "./components";
-import { getCacheTimestamp } from "./lib/api";
-import { formatUpdatedAt } from "./lib/formatters";
 
 type PriceFilter =
   | "all"
@@ -35,9 +33,8 @@ const PRICE_FILTERS: { id: PriceFilter; label: string }[] = [
 export default function AIModelsByPrice() {
   const { data, isLoading } = useModelsData();
   const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
-  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const navigationTitle = lastUpdated ? `AI Models by Price · Updated ${lastUpdated}` : "AI Models by Price";
-  const sectionTitle = lastUpdated ? `Models · Updated ${lastUpdated}` : undefined;
+  const navigationTitle = "AI Models by Price";
+  const sectionTitle = "Models";
 
   const filteredModels = useMemo(() => {
     if (!data?.models) return [];

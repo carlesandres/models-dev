@@ -5,14 +5,11 @@ import { ProviderListItem, ModelListSection } from "./components";
 import { filterByCapability, filterByProvider } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
 import { Capability, Model } from "./lib/types";
-import { getCacheTimestamp } from "./lib/api";
-import { formatUpdatedAt } from "./lib/formatters";
 
 function ProviderModels({ providerId, providerName }: { providerId: string; providerName: string }) {
   const { data, isLoading } = useModelsData();
   const [capability, setCapability] = useState<Capability | "all">("all");
-  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const sectionTitle = lastUpdated ? `Models · Updated ${lastUpdated}` : undefined;
+  const sectionTitle = "Models";
 
   const models = useMemo(() => {
     let filtered = data?.models ? filterByProvider(data.models, providerId) : [];
@@ -59,9 +56,8 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
 export default function SearchAIProviders() {
   const { data, isLoading } = useModelsData();
   const { push } = useNavigation();
-  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const navigationTitle = lastUpdated ? `Search AI Providers · Updated ${lastUpdated}` : "Search AI Providers";
-  const sectionTitle = lastUpdated ? `Providers · Updated ${lastUpdated}` : undefined;
+  const navigationTitle = "Search AI Providers";
+  const sectionTitle = "Providers";
 
   const modelsByProvider = useMemo(() => {
     const map = new Map<string, Model[]>();

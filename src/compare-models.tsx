@@ -3,8 +3,7 @@ import { useState, useMemo } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
-import { getCacheTimestamp } from "./lib/api";
-import { formatPrice, formatContextWindow, formatUpdatedAt } from "./lib/formatters";
+import { formatPrice, formatContextWindow } from "./lib/formatters";
 
 function ComparisonView({ models }: { models: Model[] }) {
   // Build comparison markdown table
@@ -58,15 +57,8 @@ export default function CompareAIModels() {
   const { data, isLoading } = useModelsData();
   const { push } = useNavigation();
   const [selectedModels, setSelectedModels] = useState<Model[]>([]);
-  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const navigationTitle = lastUpdated ? `Compare AI Models · Updated ${lastUpdated}` : "Compare AI Models";
-  const availableTitle = lastUpdated
-    ? selectedModels.length > 0
-      ? `Available · Updated ${lastUpdated}`
-      : `Models · Updated ${lastUpdated}`
-    : selectedModels.length > 0
-      ? "Available"
-      : undefined;
+  const navigationTitle = "Compare AI Models";
+  const availableTitle = selectedModels.length > 0 ? "Available" : "Models";
 
   const selectedIds = useMemo(() => new Set(selectedModels.map((m) => `${m.providerId}-${m.id}`)), [selectedModels]);
 

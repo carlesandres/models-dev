@@ -5,15 +5,12 @@ import { ModelListSection } from "./components";
 import { Capability, Model } from "./lib/types";
 import { filterByCapability, sortByProviderThenName, filterOutDeprecated } from "./lib/filters";
 import { ALL_CAPABILITIES, CAPABILITIES } from "./lib/constants";
-import { getCacheTimestamp } from "./lib/api";
-import { formatUpdatedAt } from "./lib/formatters";
 
 export default function SearchAIModels() {
   const { data, isLoading } = useModelsData();
   const [capability, setCapability] = useState<Capability | "all">("all");
-  const lastUpdated = formatUpdatedAt(getCacheTimestamp());
-  const navigationTitle = lastUpdated ? `Search AI Models · Updated ${lastUpdated}` : "Search AI Models";
-  const sectionTitle = lastUpdated ? `Models · Updated ${lastUpdated}` : undefined;
+  const navigationTitle = "Search AI Models";
+  const sectionTitle = "Models";
 
   const filteredModels = useMemo(() => {
     if (!data?.models) return [];
