@@ -20,7 +20,8 @@
       "description": "Allow periodic background refresh of models data",
       "type": "checkbox",
       "label": "Enable background sync",
-      "default": false
+      "default": false,
+      "required": false
     }
   ],
   "license": "MIT",
@@ -44,35 +45,70 @@
       "title": "Search AI Models",
       "subtitle": "Models Dev",
       "description": "Search across all AI models by name, provider, or capability",
-      "mode": "view"
+      "mode": "view",
+      "keywords": [
+        "llm",
+        "gpt",
+        "claude",
+        "gemini",
+        "search",
+        "find"
+      ]
     },
     {
       "name": "browse-providers",
       "title": "Search AI Providers",
       "subtitle": "Models Dev",
       "description": "Explore AI providers and their model offerings",
-      "mode": "view"
+      "mode": "view",
+      "keywords": [
+        "openai",
+        "anthropic",
+        "google",
+        "provider",
+        "vendor"
+      ]
     },
     {
       "name": "find-by-capability",
       "title": "AI Models by Capability",
       "subtitle": "Models Dev",
       "description": "Filter models by multiple capabilities",
-      "mode": "view"
+      "mode": "view",
+      "keywords": [
+        "reasoning",
+        "vision",
+        "audio",
+        "tools",
+        "filter"
+      ]
     },
     {
       "name": "pricing-explorer",
       "title": "AI Models by Price",
       "subtitle": "Models Dev",
       "description": "Compare model pricing across providers",
-      "mode": "view"
+      "mode": "view",
+      "keywords": [
+        "cost",
+        "pricing",
+        "cheap",
+        "expensive",
+        "budget"
+      ]
     },
     {
       "name": "compare-models",
       "title": "Compare AI Models",
       "subtitle": "Models Dev",
       "description": "Select models to compare side-by-side",
-      "mode": "view"
+      "mode": "view",
+      "keywords": [
+        "compare",
+        "diff",
+        "versus",
+        "side-by-side"
+      ]
     },
     {
       "name": "background-sync",
