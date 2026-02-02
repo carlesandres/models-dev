@@ -88,7 +88,7 @@ export default function AIModelsByPrice() {
 
   return (
     <List
-      isLoading={isLoading && !(data?.models?.length ?? 0)}
+      isLoading={isLoading && !data?.models?.length}
       navigationTitle={navigationTitle}
       searchBarPlaceholder="Search models..."
       searchBarAccessory={

@@ -33,7 +33,7 @@ export default function SearchAIModels() {
 
   return (
     <List
-      isLoading={isLoading && !(data?.models?.length ?? 0)}
+      isLoading={isLoading && !data?.models?.length}
       navigationTitle={navigationTitle}
       searchBarPlaceholder="Search models by name, provider, or capability..."
       searchBarAccessory={

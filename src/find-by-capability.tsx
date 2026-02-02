@@ -20,7 +20,7 @@ function CapabilityResultsView({ models, isLoading, selectedCapabilities }: Capa
 
   const sectionTitle = useMemo(() => {
     return selectedCapabilities.length > 0 ? `Models with: ${selectedLabels}` : "All Models";
-  }, [selectedCapabilities.length, selectedLabels]);
+  }, [selectedCapabilities, selectedLabels]);
 
   const filteredModels = useMemo(() => {
     let filtered: Model[] = models;
@@ -33,7 +33,7 @@ function CapabilityResultsView({ models, isLoading, selectedCapabilities }: Capa
 
   return (
     <List
-      isLoading={isLoading && !(models?.length ?? 0)}
+      isLoading={isLoading && !models?.length}
       navigationTitle={navigationTitle}
       searchBarPlaceholder="Search models..."
     >
@@ -139,7 +139,7 @@ export default function AIModelsByCapability() {
 
   return (
     <CapabilitySelectionView
-      isLoading={isLoading && !(data?.models?.length ?? 0)}
+      isLoading={isLoading && !data?.models?.length}
       selectedCapabilities={selectedCapabilities}
       onToggle={toggleCapability}
       onClear={() => setSelectedCapabilities([])}

@@ -21,7 +21,7 @@ function ProviderModels({ providerId, providerName }: { providerId: string; prov
 
   return (
     <List
-      isLoading={isLoading && !(data?.models?.length ?? 0)}
+      isLoading={isLoading && !data?.models?.length}
       navigationTitle={providerName}
       searchBarPlaceholder={`Search ${providerName} models...`}
       searchBarAccessory={
@@ -78,7 +78,7 @@ export default function SearchAIProviders() {
 
   return (
     <List
-      isLoading={isLoading && !(data?.providers?.length ?? 0)}
+      isLoading={isLoading && !data?.providers?.length}
       navigationTitle={navigationTitle}
       searchBarPlaceholder="Search providers..."
     >
