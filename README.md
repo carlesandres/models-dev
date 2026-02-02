@@ -12,6 +12,10 @@ Search all models by name, provider, or family. Filter by capability: reasoning,
 
 List all providers and drill into their model offerings. View model counts and access provider documentation.
 
+### AI Models by Capability
+
+Filter models by multiple capabilities at once (e.g., reasoning + vision + tool calling).
+
 ### Compare AI Models
 
 Select up to three models for side-by-side comparison. View pricing, context windows, and capabilities in a table. Export comparisons as markdown.

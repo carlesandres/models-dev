@@ -54,6 +54,13 @@
       "mode": "view"
     },
     {
+      "name": "find-by-capability",
+      "title": "AI Models by Capability",
+      "subtitle": "Models Dev",
+      "description": "Filter models by multiple capabilities",
+      "mode": "view"
+    },
+    {
       "name": "pricing-explorer",
       "title": "AI Models by Price",
       "subtitle": "Models Dev",
