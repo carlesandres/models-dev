@@ -121,6 +121,7 @@ export default function CompareAIModels() {
         </List.Dropdown>
       }
     >
+      <List.EmptyView title="No Models Found" description="No models match your search" icon={Icon.MagnifyingGlass} />
       {selectedModels.length > 0 && (
         <List.Section title={`Selected (${selectedModels.length}/3)`}>
           {selectedModels.map((model) => (
