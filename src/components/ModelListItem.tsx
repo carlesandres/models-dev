@@ -1,5 +1,6 @@
 import { List, Icon } from "@raycast/api";
 import type { ActionPanel } from "@raycast/api";
+import { useMemo, memo } from "react";
 import { Model } from "../lib/types";
 import { formatPriceFixed } from "../lib/formatters";
 import { ModelActions } from "./ModelActions";
@@ -15,50 +16,72 @@ interface ModelListItemProps {
   extraActions?: ActionPanelChildren;
 }
 
-export function ModelListItem({ model, onAddToComparison, primaryAction, extraActions }: ModelListItemProps) {
-  const accessories: List.Item.Accessory[] = [];
+export const ModelListItem = memo(function ModelListItem({
+  model,
+  onAddToComparison,
+  primaryAction,
+  extraActions,
+}: ModelListItemProps) {
+  const accessories = useMemo(() => {
+    const acc: List.Item.Accessory[] = [];
 
-  // Status indicator (alpha, beta, deprecated)
-  if (model.status) {
-    accessories.push({
-      tag: {
-        value: model.status,
-        color: STATUS_COLORS[model.status],
-      },
-    });
-  }
+    // Status indicator (alpha, beta, deprecated)
+    if (model.status) {
+      acc.push({
+        tag: {
+          value: model.status,
+          color: STATUS_COLORS[model.status],
+        },
+      });
+    }
 
-  // Capability icons
-  accessories.push(...getCapabilityAccessories(model));
+    // Capability icons
+    acc.push(...getCapabilityAccessories(model));
 
-  // Pricing (input / output)
-  if (model.cost?.input !== undefined) {
-    accessories.push({
-      text: formatPriceFixed(model.cost.input),
-      tooltip: "Input price per 1M tokens",
-    });
-  }
-  if (model.cost?.output !== undefined) {
-    accessories.push({
-      text: formatPriceFixed(model.cost.output),
-      tooltip: "Output price per 1M tokens",
-    });
-  }
+    // Pricing (input / output)
+    if (model.cost?.input !== undefined) {
+      acc.push({
+        text: formatPriceFixed(model.cost.input),
+        tooltip: "Input price per 1M tokens",
+      });
+    }
+    if (model.cost?.output !== undefined) {
+      acc.push({
+        text: formatPriceFixed(model.cost.output),
+        tooltip: "Output price per 1M tokens",
+      });
+    }
+
+    return acc;
+  }, [model.status, model.cost?.input, model.cost?.output, model]);
 
   // Build keywords for search
-  const keywords = [
-    model.providerId,
-    model.providerName,
-    model.family ?? "",
-    `${model.name} ${model.providerName}`,
-    model.reasoning ? "reasoning" : "",
-    model.tool_call ? "tool calling function" : "",
-    model.modalities.input.includes("image") ? "vision image" : "",
-    model.modalities.input.includes("audio") ? "audio" : "",
-    model.modalities.input.includes("video") ? "video" : "",
-    model.modalities.input.includes("pdf") ? "pdf" : "",
-    model.open_weights ? "open weights" : "",
-  ].filter(Boolean);
+  const keywords = useMemo(
+    () =>
+      [
+        model.providerId,
+        model.providerName,
+        model.family ?? "",
+        `${model.name} ${model.providerName}`,
+        model.reasoning ? "reasoning" : "",
+        model.tool_call ? "tool calling function" : "",
+        model.modalities.input.includes("image") ? "vision image" : "",
+        model.modalities.input.includes("audio") ? "audio" : "",
+        model.modalities.input.includes("video") ? "video" : "",
+        model.modalities.input.includes("pdf") ? "pdf" : "",
+        model.open_weights ? "open weights" : "",
+      ].filter(Boolean),
+    [
+      model.providerId,
+      model.providerName,
+      model.family,
+      model.name,
+      model.reasoning,
+      model.tool_call,
+      model.modalities.input,
+      model.open_weights,
+    ],
+  );
 
   return (
     <List.Item
@@ -77,4 +100,4 @@ export function ModelListItem({ model, onAddToComparison, primaryAction, extraAc
       }
     />
   );
-}
+});
