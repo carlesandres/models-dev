@@ -68,23 +68,20 @@ export default function CompareAIModels() {
 
   const handleToggleModel = useCallback(
     (model: Model) => {
-      setSelectedModels((prev) => {
-        const modelKey = `${model.providerId}-${model.id}`;
-        const isSelected = prev.some((m) => `${m.providerId}-${m.id}` === modelKey);
+      const modelKey = `${model.providerId}-${model.id}`;
+      const isSelected = selectedModels.some((m) => `${m.providerId}-${m.id}` === modelKey);
 
-        if (isSelected) {
-          return prev.filter((m) => `${m.providerId}-${m.id}` !== modelKey);
-        } else {
-          const newSelection = [...prev, model];
-          if (newSelection.length === 2) {
-            // Auto-navigate to comparison view
-            push(<ComparisonView models={newSelection} />);
-          }
-          return newSelection;
+      if (isSelected) {
+        setSelectedModels(selectedModels.filter((m) => `${m.providerId}-${m.id}` !== modelKey));
+      } else {
+        const newSelection = [...selectedModels, model];
+        setSelectedModels(newSelection);
+        if (newSelection.length === 2) {
+          push(<ComparisonView models={newSelection} />);
         }
-      });
+      }
     },
-    [push],
+    [selectedModels, push],
   );
 
   const handleRemoveFromDropdown = useCallback((value: string) => {
