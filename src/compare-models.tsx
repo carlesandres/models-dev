@@ -1,5 +1,5 @@
 import { List, Detail, Icon, ActionPanel, Action, useNavigation, showToast, Toast } from "@raycast/api";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
@@ -66,24 +66,28 @@ export default function CompareAIModels() {
     return data.models.filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`));
   }, [data?.models, selectedIds]);
 
-  const handleToggleModel = (model: Model) => {
-    const modelKey = `${model.providerId}-${model.id}`;
-    if (selectedIds.has(modelKey)) {
-      setSelectedModels(selectedModels.filter((m) => `${m.providerId}-${m.id}` !== modelKey));
-    } else {
-      if (selectedModels.length >= 3) {
-        showToast({
-          style: Toast.Style.Failure,
-          title: "Maximum 3 models",
-          message: "Remove a model before adding another",
-        });
-        return;
-      }
-      setSelectedModels([...selectedModels, model]);
-    }
-  };
+  const handleToggleModel = useCallback((model: Model) => {
+    setSelectedModels((prev) => {
+      const modelKey = `${model.providerId}-${model.id}`;
+      const isSelected = prev.some((m) => `${m.providerId}-${m.id}` === modelKey);
 
-  const handleCompare = () => {
+      if (isSelected) {
+        return prev.filter((m) => `${m.providerId}-${m.id}` !== modelKey);
+      } else {
+        if (prev.length >= 3) {
+          showToast({
+            style: Toast.Style.Failure,
+            title: "Maximum 3 models",
+            message: "Remove a model before adding another",
+          });
+          return prev;
+        }
+        return [...prev, model];
+      }
+    });
+  }, []);
+
+  const handleCompare = useCallback(() => {
     if (selectedModels.length < 2) {
       showToast({
         style: Toast.Style.Failure,
@@ -93,22 +97,20 @@ export default function CompareAIModels() {
       return;
     }
     push(<ComparisonView models={selectedModels} />);
-  };
+  }, [selectedModels, push]);
+
+  const handleRemoveFromDropdown = useCallback((value: string) => {
+    if (value !== "info") {
+      setSelectedModels((prev) => prev.filter((m) => `${m.providerId}-${m.id}` !== value));
+    }
+  }, []);
 
   return (
     <List
       isLoading={isLoading && !data?.models?.length}
       searchBarPlaceholder="Search models to compare..."
       searchBarAccessory={
-        <List.Dropdown
-          tooltip={`${selectedModels.length} selected`}
-          value="info"
-          onChange={(value) => {
-            if (value !== "info") {
-              setSelectedModels(selectedModels.filter((m) => `${m.providerId}-${m.id}` !== value));
-            }
-          }}
-        >
+        <List.Dropdown tooltip={`${selectedModels.length} selected`} value="info" onChange={handleRemoveFromDropdown}>
           <List.Dropdown.Item title={`${selectedModels.length}/3 models selected`} value="info" />
           {selectedModels.map((m) => (
             <List.Dropdown.Item
