@@ -8,7 +8,7 @@ type ActionPanelChildren = Parameters<typeof ActionPanel>[0]["children"];
 interface ModelActionsProps {
   model: Model;
   onAddToComparison?: (model: Model) => void;
-  canAddToComparison?: boolean | (() => boolean);
+  canAddToComparison?: boolean;
   showViewDetails?: boolean;
   primaryAction?: ActionPanelChildren;
   extraActions?: ActionPanelChildren;
@@ -96,20 +96,16 @@ export const ModelActions = memo(function ModelActions({
         />
       </ActionPanel.Section>
 
-      {onAddToComparison &&
-        (() => {
-          const canAdd = typeof canAddToComparison === "function" ? canAddToComparison() : canAddToComparison;
-          return canAdd !== false ? (
-            <ActionPanel.Section>
-              <Action
-                title="Add to Comparison"
-                icon={Icon.PlusCircle}
-                shortcut={{ modifiers: ["cmd", "shift"], key: "a" }}
-                onAction={() => onAddToComparison(model)}
-              />
-            </ActionPanel.Section>
-          ) : null;
-        })()}
+      {onAddToComparison && canAddToComparison !== false && (
+        <ActionPanel.Section>
+          <Action
+            title="Add to Comparison"
+            icon={Icon.PlusCircle}
+            shortcut={{ modifiers: ["cmd", "shift"], key: "a" }}
+            onAction={() => onAddToComparison(model)}
+          />
+        </ActionPanel.Section>
+      )}
 
       {extraActions}
     </ActionPanel>

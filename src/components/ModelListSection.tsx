@@ -9,11 +9,13 @@ interface ModelListSectionProps {
   models: Model[];
   title?: string;
   onAddToComparison?: (model: Model) => void;
-  canAddToComparison?: boolean | (() => boolean);
+  canAddToComparison?: boolean;
   getPrimaryAction?: (model: Model) => ActionPanelChildren;
   extraActions?: ActionPanelChildren;
 }
 
+// Memoized to prevent re-rendering all list items when parent state changes.
+// With 3,800+ models, avoiding unnecessary renders improves performance.
 export const ModelListSection = memo(function ModelListSection({
   models,
   title,

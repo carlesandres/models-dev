@@ -12,7 +12,7 @@ type ActionPanelChildren = Parameters<typeof ActionPanel>[0]["children"];
 interface ModelListItemProps {
   model: Model;
   onAddToComparison?: (model: Model) => void;
-  canAddToComparison?: boolean | (() => boolean);
+  canAddToComparison?: boolean;
   primaryAction?: ActionPanelChildren;
   extraActions?: ActionPanelChildren;
 }
@@ -88,11 +88,7 @@ export const ModelListItem = memo(function ModelListItem({
   const defaultPrimaryAction = useMemo(() => {
     if (!onAddToComparison) return undefined;
 
-    // Read value lazily — if it's a stable function ref, calling it here avoids
-    // the memo depending on a volatile boolean that changes for all 3,800 items at once.
-    const canAdd = typeof canAddToComparison === "function" ? canAddToComparison() : canAddToComparison;
-
-    if (canAdd === false) {
+    if (canAddToComparison === false) {
       return <Action.CopyToClipboard title="Copy Model ID" content={model.id} />;
     }
 

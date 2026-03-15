@@ -1,5 +1,5 @@
 import { List, Detail, Icon, ActionPanel, Action } from "@raycast/api";
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
@@ -63,12 +63,10 @@ export default function CompareAIModels() {
   const [showComparison, setShowComparison] = useState(false);
   const availableTitle = selectedModels.length > 0 ? "Available" : "Models";
 
-  // Use a ref to track canAddMore so we can pass a stable function reference
-  // to ModelListSection/ModelListItem — this prevents all 3,800 item memos from
-  // invalidating simultaneously when the first model is selected.
-  const canAddMoreRef = useRef(true);
-  canAddMoreRef.current = selectedModels.length < 2;
-  const getCanAddToComparison = useCallback(() => canAddMoreRef.current, []);
+  // Memoized to prevent unnecessary re-renders when other state changes.
+  // Note: View switching (showComparison state) is the actual OOM fix -
+  // it unmounts the List when comparison shows, preventing view stacking.
+  const canAddToComparison = useMemo(() => selectedModels.length < 2, [selectedModels.length]);
 
   const selectedIds = useMemo(() => new Set(selectedModels.map((m) => `${m.providerId}-${m.id}`)), [selectedModels]);
 
@@ -158,7 +156,7 @@ export default function CompareAIModels() {
         models={availableModels}
         title={availableTitle}
         onAddToComparison={handleToggleModel}
-        canAddToComparison={getCanAddToComparison}
+        canAddToComparison={canAddToComparison}
       />
     </List>
   );
