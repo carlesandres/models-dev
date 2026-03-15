@@ -8,6 +8,7 @@ interface ModelListSectionProps {
   models: Model[];
   title?: string;
   onAddToComparison?: (model: Model) => void;
+  canAddToComparison?: boolean;
   getPrimaryAction?: (model: Model) => ActionPanelChildren;
   extraActions?: ActionPanelChildren;
 }
@@ -16,6 +17,7 @@ export function ModelListSection({
   models,
   title,
   onAddToComparison,
+  canAddToComparison,
   getPrimaryAction,
   extraActions,
 }: ModelListSectionProps) {
@@ -28,6 +30,7 @@ export function ModelListSection({
           key={`${model.providerId}-${model.id}`}
           model={model}
           onAddToComparison={onAddToComparison}
+          canAddToComparison={canAddToComparison}
           primaryAction={getPrimaryAction ? getPrimaryAction(model) : undefined}
           extraActions={extraActions}
         />

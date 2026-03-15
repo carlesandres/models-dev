@@ -58,6 +58,7 @@ export default function CompareAIModels() {
   const { push } = useNavigation();
   const [selectedModels, setSelectedModels] = useState<Model[]>([]);
   const availableTitle = selectedModels.length > 0 ? "Available" : "Models";
+  const canAddMore = selectedModels.length < 2;
 
   const selectedIds = useMemo(() => new Set(selectedModels.map((m) => `${m.providerId}-${m.id}`)), [selectedModels]);
 
@@ -130,13 +131,8 @@ export default function CompareAIModels() {
       <ModelListSection
         models={availableModels}
         title={availableTitle}
-        getPrimaryAction={(model) =>
-          selectedModels.length < 2 ? (
-            <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => handleToggleModel(model)} />
-          ) : (
-            <Action.CopyToClipboard title="Copy Model ID" content={model.id} />
-          )
-        }
+        onAddToComparison={handleToggleModel}
+        canAddToComparison={canAddMore}
       />
     </List>
   );

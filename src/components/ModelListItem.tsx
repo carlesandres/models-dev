@@ -1,4 +1,4 @@
-import { List, Icon } from "@raycast/api";
+import { List, Icon, Action } from "@raycast/api";
 import type { ActionPanel } from "@raycast/api";
 import { useMemo, memo } from "react";
 import { Model } from "../lib/types";
@@ -12,6 +12,7 @@ type ActionPanelChildren = Parameters<typeof ActionPanel>[0]["children"];
 interface ModelListItemProps {
   model: Model;
   onAddToComparison?: (model: Model) => void;
+  canAddToComparison?: boolean;
   primaryAction?: ActionPanelChildren;
   extraActions?: ActionPanelChildren;
 }
@@ -19,6 +20,7 @@ interface ModelListItemProps {
 export const ModelListItem = memo(function ModelListItem({
   model,
   onAddToComparison,
+  canAddToComparison,
   primaryAction,
   extraActions,
 }: ModelListItemProps) {
@@ -83,6 +85,18 @@ export const ModelListItem = memo(function ModelListItem({
     ],
   );
 
+  const defaultPrimaryAction = useMemo(() => {
+    if (!onAddToComparison) return undefined;
+
+    if (canAddToComparison === false) {
+      return <Action.CopyToClipboard title="Copy Model ID" content={model.id} />;
+    }
+
+    return <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => onAddToComparison(model)} />;
+  }, [onAddToComparison, canAddToComparison, model.id, model]);
+
+  const resolvedPrimaryAction = primaryAction ?? defaultPrimaryAction;
+
   return (
     <List.Item
       title={model.name}
@@ -94,7 +108,8 @@ export const ModelListItem = memo(function ModelListItem({
         <ModelActions
           model={model}
           onAddToComparison={onAddToComparison}
-          primaryAction={primaryAction}
+          canAddToComparison={canAddToComparison}
+          primaryAction={resolvedPrimaryAction}
           extraActions={extraActions}
         />
       }
