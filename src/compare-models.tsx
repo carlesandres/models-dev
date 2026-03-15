@@ -1,4 +1,4 @@
-import { List, Detail, Icon, ActionPanel, Action, useNavigation } from "@raycast/api";
+import { List, Detail, Icon, ActionPanel, Action } from "@raycast/api";
 import { useState, useMemo, useCallback, useRef } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
@@ -6,7 +6,7 @@ import { Model } from "./lib/types";
 import { formatPrice, formatContextWindow } from "./lib/formatters";
 import { filterOutDeprecated } from "./lib/filters";
 
-function ComparisonView({ models }: { models: Model[] }) {
+function ComparisonView({ models, onEditSelection }: { models: Model[]; onEditSelection: () => void }) {
   // Build comparison markdown table
   const headers = ["", ...models.map((m) => m.name)];
   const headerRow = `| ${headers.join(" | ")} |`;
@@ -45,6 +45,12 @@ function ComparisonView({ models }: { models: Model[] }) {
             content={markdown}
             shortcut={{ modifiers: ["cmd"], key: "c" }}
           />
+          <Action
+            title="Edit Selection"
+            icon={Icon.Pencil}
+            shortcut={{ modifiers: ["cmd"], key: "e" }}
+            onAction={onEditSelection}
+          />
         </ActionPanel>
       }
     />
@@ -53,8 +59,8 @@ function ComparisonView({ models }: { models: Model[] }) {
 
 export default function CompareAIModels() {
   const { data, isLoading } = useModelsData();
-  const { push } = useNavigation();
   const [selectedModels, setSelectedModels] = useState<Model[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
   const availableTitle = selectedModels.length > 0 ? "Available" : "Models";
 
   // Use a ref to track canAddMore so we can pass a stable function reference
@@ -68,35 +74,48 @@ export default function CompareAIModels() {
 
   const availableModels = useMemo(() => {
     if (!data?.models) return [];
+    if (showComparison || selectedModels.length >= 2) return [];
     return filterOutDeprecated(data.models.filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`)));
-  }, [data?.models, selectedIds]);
+  }, [data?.models, selectedIds, showComparison, selectedModels.length]);
 
-  const handleToggleModel = useCallback(
-    (model: Model) => {
-      const modelKey = `${model.providerId}-${model.id}`;
+  const handleToggleModel = useCallback((model: Model) => {
+    const modelKey = `${model.providerId}-${model.id}`;
 
-      setSelectedModels((prev) => {
-        const isSelected = prev.some((m) => `${m.providerId}-${m.id}` === modelKey);
+    setSelectedModels((prev) => {
+      const isSelected = prev.some((m) => `${m.providerId}-${m.id}` === modelKey);
 
-        if (isSelected) {
-          return prev.filter((m) => `${m.providerId}-${m.id}` !== modelKey);
+      if (isSelected) {
+        const next = prev.filter((m) => `${m.providerId}-${m.id}` !== modelKey);
+        if (next.length < 2) {
+          setTimeout(() => setShowComparison(false), 0);
         }
+        return next;
+      }
 
-        const newSelection = [...prev, model];
-        if (newSelection.length === 2) {
-          setTimeout(() => push(<ComparisonView models={newSelection} />), 0);
-        }
-        return newSelection;
-      });
-    },
-    [push],
-  );
+      // Defensive guard: never allow selecting more than 2.
+      if (prev.length >= 2) {
+        return prev;
+      }
+
+      const newSelection = [...prev, model];
+      if (newSelection.length === 2) {
+        // Avoid stacking the heavy List view and the Detail view.
+        // Switching views unmounts the List, reducing peak memory.
+        setTimeout(() => setShowComparison(true), 0);
+      }
+      return newSelection;
+    });
+  }, []);
 
   const handleRemoveFromDropdown = useCallback((value: string) => {
     if (value !== "info") {
       setSelectedModels((prev) => prev.filter((m) => `${m.providerId}-${m.id}` !== value));
     }
   }, []);
+
+  if (showComparison && selectedModels.length === 2) {
+    return <ComparisonView models={selectedModels} onEditSelection={() => setShowComparison(false)} />;
+  }
 
   return (
     <List
