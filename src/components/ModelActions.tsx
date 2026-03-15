@@ -1,5 +1,5 @@
-import { Action, ActionPanel, Icon, Clipboard } from "@raycast/api";
-import { useCallback } from "react";
+import { Action, ActionPanel, Icon, Clipboard, useNavigation } from "@raycast/api";
+import { memo, useCallback } from "react";
 import { Model } from "../lib/types";
 import { ModelDetail } from "./ModelDetail";
 
@@ -14,7 +14,7 @@ interface ModelActionsProps {
   extraActions?: ActionPanelChildren;
 }
 
-export function ModelActions({
+export const ModelActions = memo(function ModelActions({
   model,
   onAddToComparison,
   canAddToComparison,
@@ -22,6 +22,12 @@ export function ModelActions({
   primaryAction,
   extraActions,
 }: ModelActionsProps) {
+  const { push } = useNavigation();
+
+  const handleViewDetails = useCallback(() => {
+    push(<ModelDetail model={model} />);
+  }, [push, model]);
+
   const handleCopyJson = useCallback(() => {
     const modelJson = JSON.stringify(
       {
@@ -65,7 +71,7 @@ export function ModelActions({
     <ActionPanel>
       {primaryAction && <ActionPanel.Section>{primaryAction}</ActionPanel.Section>}
       <ActionPanel.Section>
-        {showViewDetails && <Action.Push title="View Details" icon={Icon.Eye} target={<ModelDetail model={model} />} />}
+        {showViewDetails && <Action title="View Details" icon={Icon.Eye} onAction={handleViewDetails} />}
         <Action.CopyToClipboard title="Copy Model ID" content={model.id} shortcut={{ modifiers: ["cmd"], key: "." }} />
         <Action.CopyToClipboard
           title="Copy Provider/Model"
@@ -104,4 +110,4 @@ export function ModelActions({
       {extraActions}
     </ActionPanel>
   );
-}
+});

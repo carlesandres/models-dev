@@ -4,6 +4,7 @@ import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
 import { formatPrice, formatContextWindow } from "./lib/formatters";
+import { filterOutDeprecated } from "./lib/filters";
 
 function ComparisonView({ models }: { models: Model[] }) {
   // Build comparison markdown table
@@ -33,9 +34,6 @@ function ComparisonView({ models }: { models: Model[] }) {
   const tableRows = rows.map((row) => `| ${row.join(" | ")} |`).join("\n");
   const markdown = `# Model Comparison\n\n${headerRow}\n${separatorRow}\n${tableRows}`;
 
-  // Build markdown for copy
-  const copyMarkdown = `# Model Comparison\n\n${headerRow}\n${separatorRow}\n${tableRows}`;
-
   return (
     <Detail
       markdown={markdown}
@@ -44,7 +42,7 @@ function ComparisonView({ models }: { models: Model[] }) {
         <ActionPanel>
           <Action.CopyToClipboard
             title="Copy as Markdown"
-            content={copyMarkdown}
+            content={markdown}
             shortcut={{ modifiers: ["cmd"], key: "c" }}
           />
         </ActionPanel>
@@ -64,25 +62,28 @@ export default function CompareAIModels() {
 
   const availableModels = useMemo(() => {
     if (!data?.models) return [];
-    return data.models.filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`));
+    return filterOutDeprecated(data.models.filter((m) => !selectedIds.has(`${m.providerId}-${m.id}`)));
   }, [data?.models, selectedIds]);
 
   const handleToggleModel = useCallback(
     (model: Model) => {
       const modelKey = `${model.providerId}-${model.id}`;
-      const isSelected = selectedModels.some((m) => `${m.providerId}-${m.id}` === modelKey);
 
-      if (isSelected) {
-        setSelectedModels(selectedModels.filter((m) => `${m.providerId}-${m.id}` !== modelKey));
-      } else {
-        const newSelection = [...selectedModels, model];
-        setSelectedModels(newSelection);
-        if (newSelection.length === 2) {
-          push(<ComparisonView models={newSelection} />);
+      setSelectedModels((prev) => {
+        const isSelected = prev.some((m) => `${m.providerId}-${m.id}` === modelKey);
+
+        if (isSelected) {
+          return prev.filter((m) => `${m.providerId}-${m.id}` !== modelKey);
         }
-      }
+
+        const newSelection = [...prev, model];
+        if (newSelection.length === 2) {
+          setTimeout(() => push(<ComparisonView models={newSelection} />), 0);
+        }
+        return newSelection;
+      });
     },
-    [selectedModels, push],
+    [push],
   );
 
   const handleRemoveFromDropdown = useCallback((value: string) => {
