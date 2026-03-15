@@ -57,39 +57,12 @@ export const ModelListItem = memo(function ModelListItem({
     return acc;
   }, [model.status, model.cost?.input, model.cost?.output]);
 
-  // Build keywords for search
-  const keywords = useMemo(() => {
-    // Create concatenated search strings for natural typing patterns
-    // e.g., "claudeanthropic" for "Claude" + "Anthropic"
-    const familyProvider = model.family ? `${model.family}${model.providerName}`.replace(/\s+/g, "").toLowerCase() : "";
-
-    const nameProvider = `${model.name}${model.providerName}`.replace(/\s+/g, "").toLowerCase();
-
-    return [
-      model.providerId,
-      model.providerName,
-      model.family ?? "",
-      familyProvider,
-      nameProvider,
-      `${model.name} ${model.providerName}`,
-      model.reasoning ? "reasoning" : "",
-      model.tool_call ? "tool calling function" : "",
-      model.modalities.input.includes("image") ? "vision image" : "",
-      model.modalities.input.includes("audio") ? "audio" : "",
-      model.modalities.input.includes("video") ? "video" : "",
-      model.modalities.input.includes("pdf") ? "pdf" : "",
-      model.open_weights ? "open weights" : "",
-    ].filter(Boolean);
-  }, [
-    model.providerId,
-    model.providerName,
-    model.family,
-    model.name,
-    model.reasoning,
-    model.tool_call,
-    model.modalities.input,
-    model.open_weights,
-  ]);
+  // Keywords for search — provider terms only.
+  // Model name is already searchable via the title prop (fuzzy matched by Raycast).
+  const keywords = useMemo(
+    () => [model.providerId, model.providerName, model.family ?? ""].filter(Boolean),
+    [model.providerId, model.providerName, model.family],
+  );
 
   const defaultPrimaryAction = useMemo(() => {
     if (!onAddToComparison) return undefined;
