@@ -1,5 +1,5 @@
 import { List, Detail, Icon, ActionPanel, Action, useNavigation } from "@raycast/api";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { useModelsData } from "./hooks/useModelsData";
 import { ModelListItem, ModelListSection } from "./components";
 import { Model } from "./lib/types";
@@ -56,7 +56,13 @@ export default function CompareAIModels() {
   const { push } = useNavigation();
   const [selectedModels, setSelectedModels] = useState<Model[]>([]);
   const availableTitle = selectedModels.length > 0 ? "Available" : "Models";
-  const canAddMore = selectedModels.length < 2;
+
+  // Use a ref to track canAddMore so we can pass a stable function reference
+  // to ModelListSection/ModelListItem — this prevents all 3,800 item memos from
+  // invalidating simultaneously when the first model is selected.
+  const canAddMoreRef = useRef(true);
+  canAddMoreRef.current = selectedModels.length < 2;
+  const getCanAddToComparison = useCallback(() => canAddMoreRef.current, []);
 
   const selectedIds = useMemo(() => new Set(selectedModels.map((m) => `${m.providerId}-${m.id}`)), [selectedModels]);
 
@@ -133,7 +139,7 @@ export default function CompareAIModels() {
         models={availableModels}
         title={availableTitle}
         onAddToComparison={handleToggleModel}
-        canAddToComparison={canAddMore}
+        canAddToComparison={getCanAddToComparison}
       />
     </List>
   );

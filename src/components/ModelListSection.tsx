@@ -1,4 +1,5 @@
 import { List, ActionPanel } from "@raycast/api";
+import { memo } from "react";
 import { Model } from "../lib/types";
 import { ModelListItem } from "./ModelListItem";
 
@@ -8,12 +9,12 @@ interface ModelListSectionProps {
   models: Model[];
   title?: string;
   onAddToComparison?: (model: Model) => void;
-  canAddToComparison?: boolean;
+  canAddToComparison?: boolean | (() => boolean);
   getPrimaryAction?: (model: Model) => ActionPanelChildren;
   extraActions?: ActionPanelChildren;
 }
 
-export function ModelListSection({
+export const ModelListSection = memo(function ModelListSection({
   models,
   title,
   onAddToComparison,
@@ -37,4 +38,4 @@ export function ModelListSection({
       ))}
     </List.Section>
   );
-}
+});

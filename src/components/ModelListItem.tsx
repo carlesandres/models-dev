@@ -12,7 +12,7 @@ type ActionPanelChildren = Parameters<typeof ActionPanel>[0]["children"];
 interface ModelListItemProps {
   model: Model;
   onAddToComparison?: (model: Model) => void;
-  canAddToComparison?: boolean;
+  canAddToComparison?: boolean | (() => boolean);
   primaryAction?: ActionPanelChildren;
   extraActions?: ActionPanelChildren;
 }
@@ -55,7 +55,7 @@ export const ModelListItem = memo(function ModelListItem({
     }
 
     return acc;
-  }, [model.status, model.cost?.input, model.cost?.output, model]);
+  }, [model.status, model.cost?.input, model.cost?.output]);
 
   // Build keywords for search
   const keywords = useMemo(
@@ -88,12 +88,16 @@ export const ModelListItem = memo(function ModelListItem({
   const defaultPrimaryAction = useMemo(() => {
     if (!onAddToComparison) return undefined;
 
-    if (canAddToComparison === false) {
+    // Read value lazily — if it's a stable function ref, calling it here avoids
+    // the memo depending on a volatile boolean that changes for all 3,800 items at once.
+    const canAdd = typeof canAddToComparison === "function" ? canAddToComparison() : canAddToComparison;
+
+    if (canAdd === false) {
       return <Action.CopyToClipboard title="Copy Model ID" content={model.id} />;
     }
 
     return <Action title="Add to Comparison" icon={Icon.PlusCircle} onAction={() => onAddToComparison(model)} />;
-  }, [onAddToComparison, canAddToComparison, model.id, model]);
+  }, [onAddToComparison, canAddToComparison, model.id]);
 
   const resolvedPrimaryAction = primaryAction ?? defaultPrimaryAction;
 
