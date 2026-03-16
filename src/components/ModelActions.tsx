@@ -28,7 +28,7 @@ export const ModelActions = memo(function ModelActions({
     push(<ModelDetail model={model} />);
   }, [push, model]);
 
-  const handleCopyJson = useCallback(() => {
+  const handleCopyJson = useCallback(async () => {
     const modelJson = JSON.stringify(
       {
         id: model.id,
@@ -52,6 +52,8 @@ export const ModelActions = memo(function ModelActions({
       2,
     );
     Clipboard.copy(modelJson);
+    const { showHUD } = await import("@raycast/api");
+    await showHUD("Copied to Clipboard");
   }, [
     model.id,
     model.name,
