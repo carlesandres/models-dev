@@ -11,7 +11,7 @@ const CACHE_KEY = "models-data";
  *
  * Uses direct fetch + Cache API instead of useCachedPromise to avoid
  * memory spikes during fresh cache population. See:
- * https://github.com/raycast/utils/issues/XXX
+ * https://github.com/raycast/utils/issues/65
  */
 export function useModelsData() {
   const [data, setData] = useState<ModelsData | null>(() => {
@@ -33,13 +33,6 @@ export function useModelsData() {
     // Already have cached data or already fetching
     if (fetchedRef.current) return;
     fetchedRef.current = true;
-
-    // If we have cached data, still revalidate in background
-    const shouldRevalidate = !!data;
-
-    if (!shouldRevalidate) {
-      setIsLoading(true);
-    }
 
     fetchModelsData()
       .then((result) => {
