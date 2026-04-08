@@ -12,6 +12,7 @@ interface ModelListSectionProps {
   canAddToComparison?: boolean;
   getPrimaryAction?: (model: Model) => ActionPanelChildren;
   extraActions?: ActionPanelChildren;
+  getAccessories?: (model: Model) => List.Item.Accessory[];
 }
 
 // Memoized to prevent re-rendering all list items when parent state changes.
@@ -23,6 +24,7 @@ export const ModelListSection = memo(function ModelListSection({
   canAddToComparison,
   getPrimaryAction,
   extraActions,
+  getAccessories,
 }: ModelListSectionProps) {
   if (models.length === 0) return null;
 
@@ -36,6 +38,7 @@ export const ModelListSection = memo(function ModelListSection({
           canAddToComparison={canAddToComparison}
           primaryAction={getPrimaryAction ? getPrimaryAction(model) : undefined}
           extraActions={extraActions}
+          accessories={getAccessories ? getAccessories(model) : undefined}
         />
       ))}
     </List.Section>
