@@ -123,7 +123,7 @@
       "preferences": [
         {
           "name": "lookbackPeriod",
-          "title": "Lookback period",
+          "title": "Lookback period (days)",
           "description": "Number of days to consider as recent",
           "type": "textfield",
           "default": "7",

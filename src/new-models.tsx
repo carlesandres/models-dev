@@ -39,7 +39,8 @@ export default function NewAIModels() {
       />
       <ModelListSection
         models={filteredModels}
-        title={`Models (${filteredModels.length})`}
+        title={`Models released in the last ${days} days`}
+        subtitle={`${filteredModels.length} models`}
         getAccessories={getAccessories}
       />
     </List>

@@ -8,6 +8,7 @@ type ActionPanelChildren = Parameters<typeof ActionPanel>[0]["children"];
 interface ModelListSectionProps {
   models: Model[];
   title?: string;
+  subtitle?: string;
   onAddToComparison?: (model: Model) => void;
   canAddToComparison?: boolean;
   getPrimaryAction?: (model: Model) => ActionPanelChildren;
@@ -20,6 +21,7 @@ interface ModelListSectionProps {
 export const ModelListSection = memo(function ModelListSection({
   models,
   title,
+  subtitle,
   onAddToComparison,
   canAddToComparison,
   getPrimaryAction,
@@ -29,7 +31,7 @@ export const ModelListSection = memo(function ModelListSection({
   if (models.length === 0) return null;
 
   return (
-    <List.Section title={title}>
+    <List.Section title={title} subtitle={subtitle}>
       {models.map((model) => (
         <ModelListItem
           key={`${model.providerId}-${model.id}`}
